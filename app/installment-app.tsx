@@ -216,6 +216,7 @@ export default function InstallmentApp() {
   const [downPercent, setDownPercent] = useState(40);
   const [termIndex, setTermIndex] = useState(2);
   const [toast, setToast] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<Record<UploadKey, string>>({
     ic: "",
     salary: "",
@@ -309,14 +310,47 @@ export default function InstallmentApp() {
     toastTimerRef.current = window.setTimeout(() => setToast(""), 3200);
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     const formData = new FormData(event.currentTarget);
     const name = String(formData.get("name") || strings.nameLabel);
     const phoneNumber = String(formData.get("phone") || "-");
     const stateName = String(formData.get("state") || "-");
+    formData.append("model", result.phone.model);
+    formData.append("capacity", result.capacity.label);
+    formData.append("color", colorName(result.color, lang));
+    formData.append("phonePrice", String(result.price));
+    formData.append("downPaymentPercent", String(downPercent));
+    formData.append("downPaymentAmount", String(result.downPayment));
+    formData.append("termMonths", String(result.term.months));
+    formData.append("monthlyPayment", String(result.monthly));
+
+    let orderId = "";
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        body: formData
+      });
+      const payload = (await response.json()) as { ok?: boolean; id?: string | number; message?: string };
+
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.message || "订单上传失败");
+      }
+
+      orderId = payload.id ? String(payload.id) : "";
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "订单上传失败，请稍后再试。");
+      setIsSubmitting(false);
+      return;
+    }
+
     const message = [
       "EDCOM TELESHOP iPhone 分期订单",
+      orderId ? `订单编号: ${orderId}` : "",
       "",
       `顾客姓名: ${name}`,
       `顾客电话: ${phoneNumber}`,
@@ -330,11 +364,16 @@ export default function InstallmentApp() {
       `分期期数: ${result.term.months} 个月`,
       `每期还款: ${formatCurrency(result.monthly)}`,
       "",
+      `身份证 IC: ${uploadedFiles.ic ? "已上传" : "未上传"}`,
+      `薪水单: ${uploadedFiles.salary ? "已上传" : "未上传"}`,
+      `银行账单: ${uploadedFiles.bank ? "已上传" : "未上传"}`,
+      "",
       "我想申请这个分期方案。"
-    ].join("\n");
+    ].filter(Boolean).join("\n");
     const whatsappUrl = `https://wa.me/60127080588?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
     showToast(getToastMessage(lang, name, result.phone.model, result.term.months, formatCurrency(result.monthly)));
+    setIsSubmitting(false);
   }
 
   function handleUploadChange(key: UploadKey, fileName: string) {
@@ -693,8 +732,8 @@ export default function InstallmentApp() {
                     </select>
                   </div>
                 </div>
-                <button className="submit" type="submit">
-                  {strings.submitButton}
+                <button className="submit" type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "正在上传..." : strings.submitButton}
                 </button>
               </form>
 
