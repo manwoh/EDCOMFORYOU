@@ -313,15 +313,28 @@ export default function InstallmentApp() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const name = String(formData.get("name") || strings.nameLabel);
-    showToast(
-      getToastMessage(
-        lang,
-        name,
-        result.phone.model,
-        result.term.months,
-        formatCurrency(result.monthly)
-      )
-    );
+    const phoneNumber = String(formData.get("phone") || "-");
+    const stateName = String(formData.get("state") || "-");
+    const message = [
+      "EDCOM TELESHOP iPhone 分期订单",
+      "",
+      `顾客姓名: ${name}`,
+      `顾客电话: ${phoneNumber}`,
+      `州属: ${stateName}`,
+      "",
+      `型号: ${result.phone.model}`,
+      `容量/版本: ${result.capacity.label}`,
+      `颜色: ${colorName(result.color, lang)}`,
+      `手机售价: ${formatCurrency(result.price)}`,
+      `首付: ${formatCurrency(result.downPayment)} (${downPercent}%)`,
+      `分期期数: ${result.term.months} 个月`,
+      `每期还款: ${formatCurrency(result.monthly)}`,
+      "",
+      "我想申请这个分期方案。"
+    ].join("\n");
+    const whatsappUrl = `https://wa.me/60127080588?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    showToast(getToastMessage(lang, name, result.phone.model, result.term.months, formatCurrency(result.monthly)));
   }
 
   function handleUploadChange(key: UploadKey, fileName: string) {
