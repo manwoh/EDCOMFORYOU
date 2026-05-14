@@ -106,7 +106,16 @@ export const translations = {
     "officialPrice": "新机售价",
     "officialFrom": "新机起售价",
     "usedPrice": "二手机售价",
-    "monthlyRowLabel": "每期还款"
+    "monthlyRowLabel": "每期还款",
+    "latestTag": "最新推荐",
+    "latestSubtitle": "优先展示最新新机，让客户快速看到起售价、当前月供、容量和颜色选择。",
+    "latestFrom": "起售价",
+    "latestMonthly": "当前月供",
+    "latestStorage": "容量",
+    "latestColors": "颜色",
+    "latestSelectButton": "选择最新款",
+    "latestBadge": "最新",
+    "selectedBadge": "已选"
   },
   "en": {
     "htmlLang": "en",
@@ -142,6 +151,15 @@ export const translations = {
     "priceRowLabel": "Phone price",
     "downRowLabel": "Down payment",
     "monthlyRowLabel": "Payment per term",
+    "latestTag": "Latest pick",
+    "latestSubtitle": "The newest new-phone model is shown upfront so customers can compare starting price, current monthly payment, storage, and colors quickly.",
+    "latestFrom": "From",
+    "latestMonthly": "Current monthly",
+    "latestStorage": "Storage",
+    "latestColors": "Colors",
+    "latestSelectButton": "Select latest",
+    "latestBadge": "Latest",
+    "selectedBadge": "Selected",
     "principalRowLabel": "Financed amount",
     "feeRowLabel": "Interest",
     "totalRowLabel": "Installment total",
@@ -248,7 +266,16 @@ export const translations = {
     "feePrefix": "Faedah bulanan",
     "officialPrice": "Harga rasmi",
     "officialFrom": "Harga rasmi bermula",
-    "usedPrice": "Harga second hand"
+    "usedPrice": "Harga second hand",
+    "latestTag": "Pilihan terkini",
+    "latestSubtitle": "Model telefon baru paling terkini dipaparkan di depan supaya pelanggan cepat bandingkan harga mula, bayaran semasa, storan dan warna.",
+    "latestFrom": "Dari",
+    "latestMonthly": "Bayaran semasa",
+    "latestStorage": "Storan",
+    "latestColors": "Warna",
+    "latestSelectButton": "Pilih model terkini",
+    "latestBadge": "Terkini",
+    "selectedBadge": "Dipilih"
   }
 } as const;
 
@@ -1156,11 +1183,11 @@ export const phones = [
 ] satisfies Phone[];
 
 export const modelPhotos = {
-  "iPhone 17 Pro Max": "/assets/phones/iphone-17-pro-max.png",
-  "iPhone 17 Pro": "/assets/phones/iphone-17-pro.png",
-  "iPhone Air": "/assets/phones/iphone-air.png",
-  "iPhone 17": "/assets/phones/iphone-17.png",
-  "iPhone 17e": "/assets/phones/iphone-17e.png",
+  "iPhone 17 Pro Max": "/assets/phones/official-polished/iphone-17-pro-max.png",
+  "iPhone 17 Pro": "/assets/phones/official-polished/iphone-17-pro.png",
+  "iPhone Air": "/assets/phones/official-polished/iphone-air.png",
+  "iPhone 17": "/assets/phones/official-polished/iphone-17.png",
+  "iPhone 17e": "/assets/phones/official-polished/iphone-17e.png",
   "iPhone 16 Pro Max": "/assets/phones/iphone-16-pro-max.png",
   "iPhone 16 Pro": "/assets/phones/iphone-16-pro.png",
   "iPhone 16 Plus": "/assets/phones/iphone-16-plus.png",

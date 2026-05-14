@@ -81,6 +81,12 @@ function getBasePrice(phone: Phone) {
   return phone.capacities[0]?.price ?? 0;
 }
 
+function getCapacityRange(phone: Phone) {
+  const first = phone.capacities[0]?.label ?? "";
+  const last = phone.capacities[phone.capacities.length - 1]?.label ?? first;
+  return first === last ? first : `${first} - ${last}`;
+}
+
 function cleanModelName(model: string) {
   return model.replace(/^Used\s+/i, "");
 }
@@ -274,6 +280,16 @@ export default function InstallmentApp() {
     selectedTerm,
     downPercent
   );
+  const latestPhone =
+    phones.find((phone) => phone.type === "Official" && phone.capacities.length > 0) ??
+    result.phone;
+  const latestPreview = calculateInstallment(
+    latestPhone,
+    latestPhone.colors[0] ?? result.color,
+    latestPhone.capacities[0] ?? result.capacity,
+    selectedTerm,
+    downPercent
+  );
   const officialPhones = filteredPhones.filter((phone) => phone.type === "Official");
   const usedPhones = filteredPhones.filter((phone) => phone.type === "Used");
   const imageAlt = `${result.phone.model} ${result.capacity.label} ${colorName(result.color, lang)}`;
@@ -350,6 +366,17 @@ export default function InstallmentApp() {
             </div>
           </section>
 
+          <PromoVideoPanel />
+
+          <LatestProductPanel
+            phone={latestPhone}
+            result={latestPreview}
+            strings={strings}
+            lang={lang}
+            isSelected={selectedPhone.model === latestPhone.model}
+            onSelect={selectPhone}
+          />
+
           <section className="panel" aria-label={strings.catalogAria}>
             <div className="catalog-head">
               <h2>{strings.catalogTitle}</h2>
@@ -411,6 +438,7 @@ export default function InstallmentApp() {
                     items={officialPhones}
                     strings={strings}
                     selectedModel={selectedPhone.model}
+                    latestModel={latestPhone.model}
                     onSelect={selectPhone}
                   />
                   <ProductSection
@@ -418,6 +446,7 @@ export default function InstallmentApp() {
                     items={usedPhones}
                     strings={strings}
                     selectedModel={selectedPhone.model}
+                    latestModel={latestPhone.model}
                     onSelect={selectPhone}
                   />
                 </>
@@ -456,11 +485,7 @@ export default function InstallmentApp() {
                 <div className="phone-mini" role="img" aria-label={imageAlt}>
                   <img
                     className="phone-image"
-                    src={
-                      result.phone.type === "Official"
-                        ? result.color.image
-                        : primaryPhoto(result.phone, result.color)
-                    }
+                    src={primaryPhoto(result.phone, result.color)}
                     alt={imageAlt}
                     onError={handleImageError}
                   />
@@ -566,11 +591,6 @@ export default function InstallmentApp() {
                 <SummaryRow label={strings.capacityRowLabel} value={result.capacity.label} />
                 <SummaryRow label={strings.colorRowLabel} value={colorName(result.color, lang)} />
                 <SummaryRow label={strings.downRowLabel} value={formatCurrency(result.downPayment)} />
-                <SummaryRow
-                  label={strings.principalRowLabel}
-                  value={formatCurrency(result.principal)}
-                />
-                <SummaryRow label={strings.feeRowLabel} value={formatCurrency(result.fee)} />
                 <SummaryRow
                   label={strings.monthlyRowLabel}
                   value={formatCurrency(result.monthly)}
@@ -678,17 +698,100 @@ export default function InstallmentApp() {
   );
 }
 
+function PromoVideoPanel() {
+  return (
+    <section className="promo-video-panel" aria-label="宣传视频">
+      <div className="promo-video-copy">
+        <span>宣传视频</span>
+        <h2>EDCOM TELESHOP iPhone 分期</h2>
+        <p>这里可以放门店宣传短片、热门 iPhone 展示、顾客分期流程和活动优惠，让客户进入页面后更快了解你的服务。</p>
+        <a href="https://wa.me/60127080588" target="_blank" rel="noopener noreferrer">
+          WhatsApp 咨询
+        </a>
+      </div>
+      <div className="promo-video-frame">
+        <video
+          controls
+          playsInline
+          preload="metadata"
+          poster="/assets/apple-iphone-premium-cover.png"
+        >
+          <source src="/assets/promo/edcom-promo.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </section>
+  );
+}
+
+function LatestProductPanel({
+  phone,
+  result,
+  strings,
+  lang,
+  isSelected,
+  onSelect
+}: {
+  phone: Phone;
+  result: InstallmentResult;
+  strings: Strings;
+  lang: LanguageCode;
+  isSelected: boolean;
+  onSelect: (phone: Phone) => void;
+}) {
+  return (
+    <section className="latest-panel" aria-label={`${strings.latestTag} ${phone.model}`}>
+      <div className="latest-media">
+        <img
+          src={primaryPhoto(phone, result.color)}
+          alt={phone.model}
+          onError={handleImageError}
+        />
+      </div>
+      <div className="latest-content">
+        <span className="latest-eyebrow">{strings.latestTag}</span>
+        <h2>{phone.model}</h2>
+        <p>{strings.latestSubtitle}</p>
+        <div className="latest-metrics">
+          <div>
+            <span>{strings.latestFrom}</span>
+            <strong>{formatCurrency(getBasePrice(phone))}</strong>
+          </div>
+          <div>
+            <span>{strings.latestMonthly}</span>
+            <strong>{formatCurrency(result.monthly)}</strong>
+          </div>
+          <div>
+            <span>{strings.latestStorage}</span>
+            <strong>{getCapacityRange(phone)}</strong>
+          </div>
+          <div>
+            <span>{strings.latestColors}</span>
+            <strong>
+              {phone.colors.length} | {colorName(result.color, lang)}
+            </strong>
+          </div>
+        </div>
+        <button className="latest-action" type="button" onClick={() => onSelect(phone)}>
+          {isSelected ? strings.selectedBadge : strings.latestSelectButton}
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function ProductSection({
   type,
   items,
   strings,
   selectedModel,
+  latestModel,
   onSelect
 }: {
   type: PhoneType;
   items: Phone[];
   strings: Strings;
   selectedModel: string;
+  latestModel: string;
   onSelect: (phone: Phone) => void;
 }) {
   if (!items.length) return null;
@@ -710,6 +813,7 @@ function ProductSection({
             phone={phone}
             strings={strings}
             isSelected={phone.model === selectedModel}
+            isLatest={phone.model === latestModel}
             onSelect={onSelect}
           />
         ))}
@@ -722,11 +826,13 @@ function ProductCard({
   phone,
   strings,
   isSelected,
+  isLatest,
   onSelect
 }: {
   phone: Phone;
   strings: Strings;
   isSelected: boolean;
+  isLatest: boolean;
   onSelect: (phone: Phone) => void;
 }) {
   return (
@@ -738,6 +844,11 @@ function ProductCard({
     >
       <div className="card-top">
         <span className="brand-badge">{phone.brand}</span>
+        {(isSelected || isLatest) && (
+          <span className={`status-badge ${isSelected ? "is-selected" : ""}`}>
+            {isSelected ? strings.selectedBadge : strings.latestBadge}
+          </span>
+        )}
       </div>
       <div className="phone-card-media">
         <img
@@ -759,8 +870,6 @@ function ProductCard({
           {strings.priceMarket}
           <br />
           {strings[phone.noteKey]}
-          <br />
-          {phone.source}
         </span>
       </div>
     </button>
