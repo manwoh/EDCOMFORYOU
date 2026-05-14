@@ -1,0 +1,2290 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>é©¬æ¥è¥¿äºšæ‰‹æœºåˆ†æœŸå•†åŸŽ</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #687384;
+      --line: #dfe5ec;
+      --paper: #ffffff;
+      --soft: #f4f7fb;
+      --accent: #087f72;
+      --accent-dark: #075f56;
+      --amber: #b7791f;
+      --danger: #b23b3b;
+      --shadow: 0 18px 55px rgba(25, 39, 52, 0.13);
+      font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% -10%, rgba(8, 127, 114, 0.15), transparent 30rem),
+        linear-gradient(180deg, #f7fafc 0%, #eef3f7 100%);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      min-height: 72px;
+      padding: 14px clamp(16px, 5vw, 64px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 1px solid rgba(23, 32, 42, 0.08);
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: clamp(150px, 19vw, 230px);
+      height: 52px;
+      object-fit: contain;
+      object-position: left center;
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .market-note {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .pill {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: #fff;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .language-select {
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 12px;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+    }
+
+    .language-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(8, 127, 114, 0.12);
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .page {
+      width: min(1440px, 100%);
+      margin: 0 auto;
+      padding: clamp(16px, 4vw, 42px);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(350px, 430px);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .left,
+    .right {
+      min-width: 0;
+    }
+
+    .hero {
+      min-height: 360px;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      background: #12202c url("https://www.apple.com/v/iphone-17-pro/e/images/overview/welcome/hero__bsveixlwbms2_xlarge.jpg") center/cover no-repeat;
+      box-shadow: var(--shadow);
+      isolation: isolate;
+      margin-bottom: 18px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(8, 18, 27, 0.72), rgba(8, 18, 27, 0.18) 52%, rgba(8, 18, 27, 0.04));
+      z-index: -1;
+    }
+
+    .hero-content {
+      min-height: 360px;
+      width: min(620px, 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(22px, 5vw, 42px);
+      color: #fff;
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      margin: 16px 0 0;
+      color: rgba(255, 255, 255, 0.82);
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    .panel {
+      border: 1px solid rgba(223, 229, 236, 0.92);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 14px 42px rgba(28, 39, 54, 0.08);
+    }
+
+    .toolbar {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .search {
+      position: relative;
+    }
+
+    .search svg {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search input,
+    .toolbar select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+    }
+
+    .search input {
+      padding: 0 12px 0 42px;
+    }
+
+    .toolbar select {
+      padding: 0 11px;
+    }
+
+    .brand-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 16px 16px;
+    }
+
+    .tab {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 13px;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+
+    .tab.is-active {
+      color: #fff;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .catalog-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 18px 4px;
+    }
+
+    .catalog-head h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .catalog-count {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .phone-grid {
+      display: grid;
+      gap: 18px;
+      padding: 16px;
+    }
+
+    .phone-section {
+      display: grid;
+      gap: 12px;
+    }
+
+    .phone-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 2px 0;
+    }
+
+    .phone-section-head h3 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    .phone-section-head span {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .phone-section-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .phone-card {
+      min-height: 390px;
+      display: grid;
+      grid-template-rows: auto 165px 1fr auto;
+      gap: 12px;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      padding: 14px;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+
+    .phone-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(28, 39, 54, 0.09);
+    }
+
+    .phone-card.is-active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(8, 127, 114, 0.12);
+    }
+
+    .phone-card-media {
+      min-height: 165px;
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.98), rgba(233, 239, 246, 0.8) 62%, rgba(214, 223, 234, 0.8) 100%);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: 10px;
+    }
+
+    .phone-card-media img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 16px 18px rgba(25, 39, 52, 0.18));
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: #425166;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .phone-name {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .phone-spec {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      margin-top: 7px;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .price-row strong {
+      color: var(--accent-dark);
+      font-size: 22px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .price-row span {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .summary {
+      position: sticky;
+      top: 92px;
+      overflow: hidden;
+    }
+
+    .summary-head {
+      padding: 22px;
+      color: #fff;
+      background: linear-gradient(135deg, #10232f, #0e6158);
+    }
+
+    .summary-head h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .summary-head p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .monthly {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .monthly strong {
+      font-size: clamp(35px, 5vw, 50px);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .monthly span {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .summary-body {
+      padding: 20px;
+    }
+
+    .chosen {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 15px;
+      align-items: center;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 18px;
+    }
+
+    .phone-mini {
+      width: 190px;
+      min-height: 230px;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #f8fafc, #e7edf4);
+      box-shadow: inset 0 0 0 1px rgba(23, 32, 42, 0.06), 0 18px 32px rgba(25, 39, 52, 0.14);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: 8px;
+    }
+
+    .phone-image {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 14px 18px rgba(25, 39, 52, 0.18));
+    }
+
+    .chosen h3 {
+      margin: 0 0 5px;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .chosen p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .control-block {
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .label-row label {
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .label-row output {
+      color: var(--accent-dark);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .range-scale {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .color-buttons,
+    .capacity-buttons,
+    .term-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .color-buttons {
+      grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+      gap: 10px;
+    }
+
+    .color-button,
+    .capacity-button,
+    .term-button {
+      min-height: 42px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .color-button {
+      min-height: 112px;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      align-items: center;
+      justify-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 8px 10px;
+      min-width: 0;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 250, 252, 0.72)),
+        var(--color-soft);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    }
+
+    .color-dot {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.78), transparent 19px),
+        linear-gradient(145deg, var(--color), var(--color-deep));
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+        inset 0 -10px 16px rgba(0, 0, 0, 0.08),
+        0 12px 22px rgba(25, 39, 52, 0.16);
+      flex: 0 0 auto;
+      position: relative;
+    }
+
+    .color-dot::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      transition: border-color 160ms ease;
+    }
+
+    .color-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .capacity-button {
+      display: grid;
+      place-items: center;
+      gap: 2px;
+      padding: 8px 6px;
+      line-height: 1.2;
+    }
+
+    .capacity-button span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .color-button.is-active,
+    .capacity-button.is-active,
+    .term-button.is-active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .color-button.is-active {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(237, 248, 246, 0.88)),
+        var(--color-soft);
+      box-shadow: 0 0 0 3px rgba(8, 127, 114, 0.14), 0 14px 28px rgba(8, 127, 114, 0.12);
+    }
+
+    .color-button.is-active .color-dot::after {
+      border-color: var(--accent);
+    }
+
+    .color-button.is-active .color-name {
+      color: var(--accent-dark);
+    }
+
+    .capacity-button.is-active span {
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .rows {
+      display: grid;
+      gap: 11px;
+      margin-bottom: 18px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .row strong {
+      color: var(--ink);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .notice {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #eef8f6;
+      color: #205d55;
+      font-size: 13px;
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+
+    .eligibility {
+      padding: 14px;
+      border: 1px solid rgba(8, 127, 114, 0.22);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #f3fbf9, #ffffff);
+      margin-bottom: 16px;
+    }
+
+    .eligibility h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+    }
+
+    .eligibility-list {
+      list-style: none;
+      display: grid;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      color: #285d56;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .eligibility-list li {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .checkmark {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      margin-top: 1px;
+    }
+
+    .checkout-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field,
+    .field-row {
+      min-width: 0;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 12px;
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .search input:focus,
+    .toolbar select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(8, 127, 114, 0.12);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .submit {
+      min-height: 52px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 12px 24px rgba(8, 127, 114, 0.24);
+      transition: background 160ms ease, transform 160ms ease;
+    }
+
+    .submit:hover {
+      transform: translateY(-1px);
+      background: var(--accent-dark);
+    }
+
+    .fineprint {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .sources {
+      margin-top: 18px;
+      padding: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      background: rgba(244, 247, 251, 0.85);
+      border-top: 1px solid var(--line);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(120px);
+      min-width: min(470px, calc(100% - 32px));
+      padding: 14px 18px;
+      border-radius: 8px;
+      background: #17202a;
+      color: #fff;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 220ms ease, opacity 220ms ease;
+      z-index: 20;
+      text-align: center;
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 1180px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .summary {
+        position: static;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .phone-section-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .market-note {
+        justify-content: flex-start;
+      }
+
+      .page {
+        padding: 14px;
+      }
+
+      .hero,
+      .hero-content {
+        min-height: 330px;
+      }
+
+      .toolbar,
+      .phone-grid,
+      .phone-section-grid,
+      .field-row,
+      .color-buttons,
+      .capacity-buttons,
+      .term-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .chosen {
+        grid-template-columns: 1fr;
+      }
+
+      .phone-mini {
+        width: min(240px, 100%);
+        min-height: 260px;
+        justify-self: center;
+      }
+
+      .catalog-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-logo" src="./assets/edcom-logo-optimized.png" alt="EDCOM TELESHOP logo">
+      <h1 id="brandTitle">EDCOM TELESHOP</h1>
+    </div>
+    <div class="market-note">
+      <select class="language-select" id="languageSelect" aria-label="Language">
+        <option value="zh">ä¸­æ–‡</option>
+        <option value="en">English</option>
+        <option value="ms">Bahasa Melayu</option>
+      </select>
+      <span class="pill">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1v22"></path>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+        MYR / RM
+      </span>
+      <span class="pill" id="priceUpdated">ä»·æ ¼æ›´æ–°ï¼š2026-05-13</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="left">
+      <section class="hero" aria-label="AI äº§å“å›¾æ¨ªå¹…" id="heroSection">
+        <div class="hero-content">
+          <h2 id="heroTitle">Apple iPhone é©¬æ¥è¥¿äºšåˆ†æœŸä¸“åŒº</h2>
+          <p id="heroCopy">åªä¿ç•™ Apple iPhone ç³»åˆ—ä¸Žé©¬æ¥è¥¿äºšå®˜æ–¹å”®ä»·ã€‚å•†å“å›¾å¼•ç”¨ Apple å®˜æ–¹äº§å“å›¾ç‰‡ï¼Œé€‰æ‹©åž‹å·åŽä¼šè‡ªåŠ¨è®¡ç®—é¦–ä»˜ã€æœˆä¾›ã€æœåŠ¡è´¹å’Œè®¢å•æ€»é¢ã€‚</p>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="æ‰‹æœºç›®å½•" id="catalogPanel">
+        <div class="catalog-head">
+          <h2 id="catalogTitle">Apple iPhone ç³»åˆ—</h2>
+          <span class="catalog-count" id="catalogCount">0 æ¬¾</span>
+        </div>
+        <div class="toolbar">
+          <label class="search" for="searchInput">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+            <input id="searchInput" type="search" placeholder="æœç´¢å“ç‰Œæˆ–åž‹å·">
+          </label>
+          <select id="sortSelect" aria-label="æŽ’åº">
+            <option value="featured">æŽ¨èæŽ’åº</option>
+            <option value="low">ä»·æ ¼ä½Žåˆ°é«˜</option>
+            <option value="high">ä»·æ ¼é«˜åˆ°ä½Ž</option>
+          </select>
+          <select id="sourceSelect" aria-label="ä»·æ ¼æ¥æº">
+            <option value="all">å…¨éƒ¨æ¥æº</option>
+            <option value="Official">æ–°æœº</option>
+            <option value="Used">äºŒæ‰‹æœº</option>
+          </select>
+        </div>
+        <div class="brand-tabs" id="brandTabs"></div>
+        <div class="phone-grid" id="phoneGrid"></div>
+      </section>
+    </section>
+
+    <aside class="right">
+      <section class="panel summary" aria-label="åˆ†æœŸè´¦å•" id="summaryPanel">
+        <div class="summary-head">
+          <h2 id="summaryTitle">åˆ†æœŸè´¦å•</h2>
+          <p id="summaryCopy">é»˜è®¤æŒ‰é©¬æ¥è¥¿äºšå”®ä»·è®¡ç®—ã€‚æ‰‹ç»­è´¹ä¸ºé¡µé¢æ¼”ç¤ºè§„åˆ™ï¼Œå¯æŒ‰ä½ çš„çœŸå®žé‡‘èžæ–¹æ¡ˆå†æ”¹ã€‚</p>
+          <div class="monthly">
+            <strong id="monthlyPay">RM0</strong>
+            <span id="monthlyUnit">/ æœˆ</span>
+          </div>
+        </div>
+
+        <div class="summary-body">
+          <div class="chosen">
+            <div class="phone-mini" id="phoneMini" role="img" aria-label="iPhone preview">
+              <img class="phone-image" id="phoneImage" alt="iPhone preview">
+            </div>
+            <div>
+              <h3 id="chosenName">-</h3>
+              <p id="chosenSpec">-</p>
+            </div>
+          </div>
+
+          <div class="control-block">
+            <div class="label-row">
+              <label id="colorLabel">é¢œè‰²é€‰æ‹©</label>
+              <output id="colorText">-</output>
+            </div>
+            <div class="color-buttons" id="colorButtons"></div>
+          </div>
+
+          <div class="control-block">
+            <div class="label-row">
+              <label id="capacityLabel">å®¹é‡é€‰æ‹©</label>
+              <output id="capacityText">256GB</output>
+            </div>
+            <div class="capacity-buttons" id="capacityButtons"></div>
+          </div>
+
+          <div class="control-block">
+            <div class="label-row">
+              <label for="downPayment" id="downPaymentLabel">é¦–ä»˜æ¯”ä¾‹</label>
+              <output id="downPaymentText">40%</output>
+            </div>
+            <input id="downPayment" type="range" min="40" max="60" step="5" value="40">
+            <div class="range-scale">
+              <span>40%</span>
+              <span>50%</span>
+              <span>60%</span>
+            </div>
+          </div>
+
+          <div class="control-block">
+            <div class="label-row">
+              <label id="termLabel">åˆ†æœŸæœŸæ•°</label>
+              <output id="rateText">æœåŠ¡è´¹ 3.2%</output>
+            </div>
+            <div class="term-buttons" id="termButtons"></div>
+          </div>
+
+          <div class="rows">
+            <div class="row">
+              <span id="priceRowLabel">æ‰‹æœºå”®ä»·</span>
+              <strong id="summaryPrice">RM0</strong>
+            </div>
+            <div class="row">
+              <span id="capacityRowLabel">所选容量</span>
+              <strong id="summaryCapacity">-</strong>
+            </div>
+            <div class="row">
+              <span id="colorRowLabel">æ‰€é€‰é¢œè‰²</span>
+              <strong id="summaryColor">-</strong>
+            </div>
+            <div class="row">
+              <span id="downRowLabel">é¦–ä»˜é‡‘é¢</span>
+              <strong id="summaryDown">RM0</strong>
+            </div>
+            <div class="row">
+              <span id="monthlyRowLabel">每期还款</span>
+              <strong id="summaryMonthly">RM0</strong>
+            </div>
+          </div>
+
+          <div class="notice">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 16v-4"></path>
+              <path d="M12 8h.01"></path>
+            </svg>
+            <span id="noticeText">æ­¤é¡µé¢æ˜¯é™æ€æ¼”ç¤ºï¼Œæäº¤ä¸ä¼šäº§ç”ŸçœŸå®žè´·æ¬¾æˆ–ä»˜æ¬¾ã€‚çœŸå®žæˆäº¤ä»·ä¼šéšé¢œè‰²ã€åº“å­˜ã€ä¿ƒé”€å’Œé—¨åº—å˜åŒ–ã€‚</span>
+          </div>
+
+          <section class="eligibility" aria-label="ç”³è¯·æ¡ä»¶">
+            <h3 id="eligibilityTitle">ç”³è¯·æ¡ä»¶</h3>
+            <ul class="eligibility-list">
+              <li><span class="checkmark">âœ“</span><span id="eligibilityItem1">CTOS / blacklist / AKPK ä¸ªæ¡ˆå¯æäº¤å®¡æ ¸ï¼Œå¤šæ•°å¯é€šè¿‡ï¼Œæœ€ç»ˆä»¥å…¬å¸å®¡æ‰¹ä¸ºå‡†ã€‚</span></li>
+              <li><span class="checkmark">âœ“</span><span id="eligibilityItem2">é©¬æ¥è¥¿äºšå…¬æ°‘ï¼Œå‡†å¤‡å®Œæ•´æ–‡ä»¶å¹¶å¯æ”¯ä»˜ 40% å¤´æœŸï¼Œå³å¯å¼€å§‹å¤„ç†ã€‚</span></li>
+              <li><span class="checkmark">âœ“</span><span id="eligibilityItem3">è‹¥ CTOS è®°å½•è¾ƒå·®ï¼Œå…¬å¸å¯èƒ½è¦æ±‚ 45%-50% å¤´æœŸã€‚</span></li>
+              <li><span class="checkmark">âœ“</span><span id="eligibilityItem4">ç­¾ç½²ç”µå­ CTOS æŽˆæƒè¡¨åŽï¼Œå…¬å¸ä¼šé€šçŸ¥å®¡æ ¸ç»“æžœã€‚</span></li>
+              <li><span class="checkmark">âœ“</span><span id="eligibilityItem5">å¤–åŠ³ä¹Ÿå¯ä»¥ç”³è¯·ï¼Œdeposit éœ€å‡†å¤‡ 50%ã€‚</span></li>
+              <li><span class="checkmark">âœ“</span><span id="eligibilityItem6">é¡¾å®¢è¿˜æœŸæœ€é«˜ 8 ä¸ªæœˆï¼Œå¼€æˆ·åŽç”¨è®¡ç®—å™¨è®¡ç®—ã€‚</span></li>
+            </ul>
+          </section>
+
+          <form class="checkout-form" id="checkoutForm">
+            <div class="field">
+              <label for="name" id="nameLabel">æ”¶è´§äºº</label>
+              <input id="name" name="name" autocomplete="name" placeholder="è¯·è¾“å…¥å§“å" required>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="phone" id="phoneLabel">é©¬æ¥è¥¿äºšæ‰‹æœºå·</label>
+                <input id="phone" name="phone" inputmode="tel" autocomplete="tel" placeholder="012-345 6789" required>
+              </div>
+              <div class="field">
+                <label for="state" id="stateLabel">é…é€å·žå±ž</label>
+                <select id="state" name="state" required>
+                  <option value="">è¯·é€‰æ‹©</option>
+                  <option>Kuala Lumpur</option>
+                  <option>Selangor</option>
+                  <option>Penang</option>
+                  <option>Johor</option>
+                  <option>Perak</option>
+                  <option>Sabah</option>
+                  <option>Sarawak</option>
+                </select>
+              </div>
+            </div>
+            <button class="submit" type="submit" id="submitButton">æäº¤æ¨¡æ‹Ÿåˆ†æœŸè®¢å•</button>
+          </form>
+
+          <p class="fineprint" id="fineprint">å”®ä»·ä»¥ 2026-05-13 æŸ¥è¯¢ç»“æžœå½•å…¥ï¼Œå•ä½ä¸ºé©¬æ¥è¥¿äºšä»¤å‰ RMã€‚</p>
+        </div>
+
+      </section>
+    </aside>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const translations = {
+      zh: {
+        htmlLang: "zh-CN",
+        docTitle: "EDCOM TELESHOP Apple iPhone åˆ†æœŸ",
+        brandTitle: "EDCOM TELESHOP",
+        priceUpdated: "ä»·æ ¼æ›´æ–°ï¼š2026-05-13",
+        heroTitle: "EDCOM TELESHOP Apple iPhone åˆ†æœŸä¸“åŒº",
+        heroCopy: "åªä¿ç•™ Apple iPhone ç³»åˆ—ä¸Žé©¬æ¥è¥¿äºšå®˜æ–¹å”®ä»·ã€‚å•†å“å›¾å¼•ç”¨ Apple å®˜æ–¹äº§å“å›¾ç‰‡ï¼Œé€‰æ‹©åž‹å·åŽä¼šè‡ªåŠ¨è®¡ç®—é¦–ä»˜ã€æœˆä¾›ã€æœåŠ¡è´¹å’Œè®¢å•æ€»é¢ã€‚",
+        heroAria: "AI äº§å“å›¾æ¨ªå¹…",
+        catalogAria: "æ‰‹æœºç›®å½•",
+        summaryAria: "åˆ†æœŸè´¦å•",
+        catalogTitle: "Apple iPhone ç³»åˆ—",
+        searchPlaceholder: "æœç´¢ iPhone åž‹å·",
+        sortAria: "æŽ’åº",
+        sourceAria: "ä»·æ ¼æ¥æº",
+        sortFeatured: "æŽ¨èæŽ’åº",
+        sortLow: "ä»·æ ¼ä½Žåˆ°é«˜",
+        sortHigh: "ä»·æ ¼é«˜åˆ°ä½Ž",
+        sourceAll: "å…¨éƒ¨æ¥æº",
+        sourceOfficial: "æ–°æœº",
+        sourceUsed: "äºŒæ‰‹æœº",
+        newSectionTitle: "æ–°æœº",
+        usedSectionTitle: "äºŒæ‰‹æœº",
+        summaryTitle: "åˆ†æœŸè´¦å•",
+        summaryCopy: "é»˜è®¤æŒ‰é©¬æ¥è¥¿äºšå”®ä»·è®¡ç®—ã€‚æ‰‹ç»­è´¹ä¸ºé¡µé¢æ¼”ç¤ºè§„åˆ™ï¼Œå¯æŒ‰ä½ çš„çœŸå®žé‡‘èžæ–¹æ¡ˆå†æ”¹ã€‚",
+        monthlyUnit: "/ æœˆ",
+        colorLabel: "é¢œè‰²é€‰æ‹©",
+        colorRowLabel: "æ‰€é€‰é¢œè‰²",
+        capacityLabel: "å®¹é‡é€‰æ‹©",
+        capacityRowLabel: "æ‰€é€‰å®¹é‡",
+        downPaymentLabel: "é¦–ä»˜æ¯”ä¾‹",
+        termLabel: "åˆ†æœŸæœŸæ•°",
+        priceRowLabel: "æ‰‹æœºå”®ä»·",
+        downRowLabel: "é¦–ä»˜é‡‘é¢",
+        principalRowLabel: "èžèµ„æœ¬é‡‘",
+        feeRowLabel: "æœåŠ¡è´¹",
+        totalRowLabel: "åˆ†æœŸæ€»é¢",
+        noticeText: "æ­¤é¡µé¢æ˜¯é™æ€æ¼”ç¤ºï¼Œæäº¤ä¸ä¼šäº§ç”ŸçœŸå®žè´·æ¬¾æˆ–ä»˜æ¬¾ã€‚çœŸå®žæˆäº¤ä»·ä¼šéšé¢œè‰²ã€åº“å­˜ã€ä¿ƒé”€å’Œé—¨åº—å˜åŒ–ã€‚",
+        eligibilityTitle: "ç”³è¯·æ¡ä»¶",
+        eligibilityItem1: "CTOS / blacklist / AKPK ä¸ªæ¡ˆå¯æäº¤å®¡æ ¸ï¼Œå¤šæ•°å¯é€šè¿‡ï¼Œæœ€ç»ˆä»¥å…¬å¸å®¡æ‰¹ä¸ºå‡†ã€‚",
+        eligibilityItem2: "é©¬æ¥è¥¿äºšå…¬æ°‘ï¼Œå‡†å¤‡å®Œæ•´æ–‡ä»¶å¹¶å¯æ”¯ä»˜ 40% å¤´æœŸï¼Œå³å¯å¼€å§‹å¤„ç†ã€‚",
+        eligibilityItem3: "è‹¥ CTOS è®°å½•è¾ƒå·®ï¼Œå…¬å¸å¯èƒ½è¦æ±‚ 45%-50% å¤´æœŸã€‚",
+        eligibilityItem4: "ç­¾ç½²ç”µå­ CTOS æŽˆæƒè¡¨åŽï¼Œå…¬å¸ä¼šé€šçŸ¥å®¡æ ¸ç»“æžœã€‚",
+        eligibilityItem5: "å¤–åŠ³ä¹Ÿå¯ä»¥ç”³è¯·ï¼Œdeposit éœ€å‡†å¤‡ 50%ã€‚",
+        eligibilityItem6: "é¡¾å®¢è¿˜æœŸæœ€é«˜ 8 ä¸ªæœˆï¼Œå¼€æˆ·åŽç”¨è®¡ç®—å™¨è®¡ç®—ã€‚",
+        nameLabel: "æ”¶è´§äºº",
+        namePlaceholder: "è¯·è¾“å…¥å§“å",
+        phoneLabel: "é©¬æ¥è¥¿äºšæ‰‹æœºå·",
+        phonePlaceholder: "012-345 6789",
+        stateLabel: "é…é€å·žå±ž",
+        statePlaceholder: "è¯·é€‰æ‹©",
+        submitButton: "æäº¤æ¨¡æ‹Ÿåˆ†æœŸè®¢å•",
+        fineprint: "å”®ä»·ä»¥ 2026-05-13 æŸ¥è¯¢ç»“æžœå½•å…¥ï¼Œå•ä½ä¸ºé©¬æ¥è¥¿äºšä»¤å‰ RMã€‚",
+        countSuffix: "æ¬¾",
+        noResultsTitle: "æ²¡æœ‰æ‰¾åˆ°åŒ¹é…æœºåž‹",
+        noResultsCopy: "è¯·æ¢ä¸€ä¸ªæœç´¢è¯æˆ–æ¥æºã€‚",
+        noResultsBadge: "æ— ç»“æžœ",
+        noPrice: "æ— ä»·æ ¼",
+        priceMarket: "Malaysia",
+        priceKind: "å”®ä»·",
+        termSuffix: "æœŸ",
+        feeZero: "æœåŠ¡è´¹ 0%",
+        feePrefix: "æœåŠ¡è´¹",
+        officialPrice: "å®˜æ–¹å”®ä»·",
+        officialFrom: "å®˜æ–¹èµ·å”®ä»·",
+        usedPrice: "äºŒæ‰‹æœºå”®ä»·",
+        toast: (name, model, months, monthly) => `${name}ï¼Œ${model} æ¨¡æ‹Ÿè®¢å•å·²ç”Ÿæˆï¼š${months} æœŸï¼Œæ¯æœˆ ${monthly}ã€‚`
+      },
+      en: {
+        htmlLang: "en",
+        docTitle: "EDCOM TELESHOP Apple iPhone Installments",
+        brandTitle: "EDCOM TELESHOP",
+        priceUpdated: "Price updated: 2026-05-13",
+        heroTitle: "EDCOM TELESHOP Apple iPhone Installments",
+        heroCopy: "Only Apple iPhone models and Malaysia official prices are kept. Product images use Apple official imagery, and the bill calculates the down payment, monthly payment, service fee, and total automatically.",
+        heroAria: "AI product banner",
+        catalogAria: "Phone catalog",
+        summaryAria: "Installment bill",
+        catalogTitle: "Apple iPhone Series",
+        searchPlaceholder: "Search iPhone model",
+        sortAria: "Sort",
+        sourceAria: "Phone type",
+        sortFeatured: "Featured",
+        sortLow: "Price low to high",
+        sortHigh: "Price high to low",
+        sourceAll: "All sources",
+        sourceOfficial: "New phones",
+        sourceUsed: "Second hand",
+        newSectionTitle: "New phones",
+        usedSectionTitle: "Second-hand phones",
+        summaryTitle: "Installment Bill",
+        summaryCopy: "Calculated with Malaysia prices by default. The service fee is a demo rule and can be adjusted to your real financing plan.",
+        monthlyUnit: "/ month",
+        colorLabel: "Color",
+        colorRowLabel: "Selected color",
+        capacityLabel: "Storage",
+        capacityRowLabel: "Selected storage",
+        downPaymentLabel: "Down payment",
+        termLabel: "Installment term",
+        priceRowLabel: "Phone price",
+        downRowLabel: "Down payment",
+        monthlyRowLabel: "Payment per term",
+        principalRowLabel: "Financed amount",
+        feeRowLabel: "Interest",
+        totalRowLabel: "Installment total",
+        noticeText: "This is a static demo page. Submitting will not create a real loan or payment. Final selling prices may vary by color, stock, promotion, and store.",
+        eligibilityTitle: "Application Requirements",
+        eligibilityItem1: "CTOS / blacklist / AKPK cases can be submitted for review. Many cases may pass, subject to company approval.",
+        eligibilityItem2: "Malaysian customers with complete documents and a 40% down payment can start processing.",
+        eligibilityItem3: "If the CTOS record is very poor, the company may request a 45%-50% down payment.",
+        eligibilityItem4: "After e-signing the CTOS consent form, the company will notify the result.",
+        eligibilityItem5: "Foreign workers may also apply; 50% deposit is required.",
+        eligibilityItem6: "Customer repayment term is up to 8 months; calculate it with the calculator after account opening.",
+        nameLabel: "Recipient",
+        namePlaceholder: "Enter name",
+        phoneLabel: "Malaysia mobile number",
+        phonePlaceholder: "012-345 6789",
+        stateLabel: "Delivery state",
+        statePlaceholder: "Select state",
+        submitButton: "Submit demo installment order",
+        fineprint: "Prices were recorded from the 2026-05-13 lookup and are shown in Malaysian Ringgit RM.",
+        countSuffix: "models",
+        noResultsTitle: "No matching model",
+        noResultsCopy: "Try another search term or source.",
+        noResultsBadge: "No results",
+        noPrice: "No price",
+        priceMarket: "Malaysia",
+        priceKind: "selling price",
+        termSuffix: "months",
+        feeZero: "Monthly interest 0%",
+        feePrefix: "Monthly interest",
+        officialPrice: "Official price",
+        officialFrom: "Official starting price",
+        usedPrice: "Used price",
+        toast: (name, model, months, monthly) => `${name}, your demo order for ${model} is ready: ${months} months, ${monthly} per month.`
+      },
+      ms: {
+        htmlLang: "ms",
+        docTitle: "Ansuran Apple iPhone EDCOM TELESHOP",
+        brandTitle: "EDCOM TELESHOP",
+        priceUpdated: "Harga dikemas kini: 2026-05-13",
+        heroTitle: "Zon Ansuran Apple iPhone EDCOM TELESHOP",
+        heroCopy: "Hanya siri Apple iPhone dan harga rasmi Malaysia dikekalkan. Imej produk menggunakan imej rasmi Apple, dan bil ansuran mengira bayaran pendahuluan, bayaran bulanan, caj perkhidmatan dan jumlah secara automatik.",
+        heroAria: "Sepanduk produk AI",
+        catalogAria: "Katalog telefon",
+        summaryAria: "Bil ansuran",
+        catalogTitle: "Siri Apple iPhone",
+        searchPlaceholder: "Cari model iPhone",
+        sortAria: "Susun",
+        sourceAria: "Jenis telefon",
+        sortFeatured: "Disyorkan",
+        sortLow: "Harga rendah ke tinggi",
+        sortHigh: "Harga tinggi ke rendah",
+        sourceAll: "Semua sumber",
+        sourceOfficial: "Telefon baru",
+        sourceUsed: "Second hand",
+        newSectionTitle: "Telefon baru",
+        usedSectionTitle: "Telefon second hand",
+        summaryTitle: "Bil Ansuran",
+        summaryCopy: "Dikira berdasarkan harga Malaysia secara lalai. Caj perkhidmatan ialah peraturan demo dan boleh diubah mengikut pelan pembiayaan sebenar.",
+        monthlyUnit: "/ bulan",
+        colorLabel: "Warna",
+        colorRowLabel: "Warna dipilih",
+        capacityLabel: "Storan",
+        capacityRowLabel: "Storan dipilih",
+        downPaymentLabel: "Bayaran pendahuluan",
+        termLabel: "Tempoh ansuran",
+        priceRowLabel: "Harga telefon",
+        downRowLabel: "Jumlah pendahuluan",
+        monthlyRowLabel: "Bayaran setiap tempoh",
+        principalRowLabel: "Jumlah dibiayai",
+        feeRowLabel: "Faedah",
+        totalRowLabel: "Jumlah ansuran",
+        noticeText: "Ini ialah halaman demo statik. Hantaran tidak akan menghasilkan pinjaman atau pembayaran sebenar. Harga jualan sebenar mungkin berubah mengikut warna, stok, promosi dan kedai.",
+        eligibilityTitle: "Syarat Permohonan",
+        eligibilityItem1: "Kes CTOS / blacklist / AKPK boleh dihantar untuk semakan. Banyak kes boleh lulus, tertakluk kepada kelulusan syarikat.",
+        eligibilityItem2: "Pelanggan warganegara Malaysia dengan dokumen lengkap dan bayaran pendahuluan 40% boleh mula diproses.",
+        eligibilityItem3: "Jika rekod CTOS sangat lemah, syarikat mungkin meminta bayaran pendahuluan 45%-50%.",
+        eligibilityItem4: "Selepas menandatangani borang kebenaran CTOS secara eSign, syarikat akan memaklumkan keputusan.",
+        eligibilityItem5: "Pekerja asing juga boleh memohon; deposit 50% diperlukan.",
+        eligibilityItem6: "Tempoh bayaran pelanggan maksimum 8 bulan; kira dengan kalkulator selepas akaun dibuka.",
+        nameLabel: "Penerima",
+        namePlaceholder: "Masukkan nama",
+        phoneLabel: "Nombor telefon Malaysia",
+        phonePlaceholder: "012-345 6789",
+        stateLabel: "Negeri penghantaran",
+        statePlaceholder: "Pilih negeri",
+        submitButton: "Hantar pesanan ansuran demo",
+        fineprint: "Harga direkodkan daripada semakan 2026-05-13 dan dipaparkan dalam Ringgit Malaysia RM.",
+        countSuffix: "model",
+        noResultsTitle: "Tiada model sepadan",
+        noResultsCopy: "Cuba kata carian atau sumber lain.",
+        noResultsBadge: "Tiada hasil",
+        noPrice: "Tiada harga",
+        priceMarket: "Malaysia",
+        priceKind: "harga jualan",
+        termSuffix: "bulan",
+        feeZero: "Faedah bulanan 0%",
+        feePrefix: "Faedah bulanan",
+        officialPrice: "Harga rasmi",
+        officialFrom: "Harga rasmi bermula",
+        usedPrice: "Harga second hand",
+        toast: (name, model, months, monthly) => `${name}, pesanan demo untuk ${model} telah dijana: ${months} bulan, ${monthly} sebulan.`
+      }
+    };
+
+    Object.assign(translations.zh, {
+      htmlLang: "zh-CN",
+      docTitle: "EDCOM TELESHOP Apple iPhone 分期",
+      brandTitle: "EDCOM TELESHOP",
+      priceUpdated: "价格更新：2026-05-13",
+      heroTitle: "EDCOM TELESHOP Apple iPhone 分期专区",
+      heroCopy: "只保留 Apple iPhone 系列与马来西亚官方售价。商品图引用 Apple 官方产品图片，选择型号后会自动计算首付、月供、服务费和订单总额。",
+      heroAria: "Apple 产品图横幅",
+      catalogAria: "手机目录",
+      summaryAria: "分期账单",
+      catalogTitle: "Apple iPhone 系列",
+      searchPlaceholder: "搜索 iPhone 型号",
+      sortAria: "排序",
+      sourceAria: "机型类型",
+      sortFeatured: "推荐排序",
+      sortLow: "价格低到高",
+      sortHigh: "价格高到低",
+      sourceAll: "全部",
+      sourceOfficial: "新机",
+      sourceUsed: "二手机",
+      newSectionTitle: "新机",
+      usedSectionTitle: "二手机",
+      summaryTitle: "分期账单",
+      summaryCopy: "默认按马来西亚售价计算。手续费为页面演示规则，可按你的真实金融方案再改。",
+      monthlyUnit: "/ 月",
+      colorLabel: "颜色选择",
+      colorRowLabel: "所选颜色",
+      capacityLabel: "容量选择",
+      capacityRowLabel: "所选容量",
+      downPaymentLabel: "首付比例",
+      termLabel: "分期期数",
+      priceRowLabel: "手机售价",
+      downRowLabel: "首付金额",
+      monthlyRowLabel: "每期还款",
+      principalRowLabel: "融资本金",
+      feeRowLabel: "利息",
+      totalRowLabel: "分期总额",
+      noticeText: "此页面是静态演示，提交不会产生真实贷款或付款。真实成交价会随颜色、库存、促销和门店变化。",
+      eligibilityTitle: "申请条件",
+      eligibilityItem1: "CTOS / blacklist / AKPK 个案可提交审核，多数可通过，最终以公司审批为准。",
+      eligibilityItem2: "马来西亚公民，准备完整文件并可支付 40% 头期，即可开始处理。",
+      eligibilityItem3: "若 CTOS 记录较差，公司可能要求 45%-50% 头期。",
+      eligibilityItem4: "签署电子 CTOS 授权表后，公司会通知审核结果。",
+      eligibilityItem5: "外劳也可以申请，deposit 需准备 50%。",
+      eligibilityItem6: "顾客还期最高 8 个月，开户后用计算器计算。",
+      nameLabel: "收货人",
+      namePlaceholder: "请输入姓名",
+      phoneLabel: "马来西亚手机号",
+      phonePlaceholder: "012-345 6789",
+      stateLabel: "配送州属",
+      statePlaceholder: "请选择",
+      submitButton: "提交模拟分期订单",
+      fineprint: "售价以 2026-05-13 查询结果录入，单位为马来西亚令吉 RM。",
+      countSuffix: "款",
+      noResultsTitle: "没有找到匹配机型",
+      noResultsCopy: "请换一个搜索词或类型。",
+      noResultsBadge: "无结果",
+      noPrice: "无价格",
+      priceMarket: "Malaysia",
+      priceKind: "售价",
+      termSuffix: "期",
+      feeZero: "月利息 0%",
+      feePrefix: "月利息",
+      officialPrice: "新机售价",
+      officialFrom: "新机起售价",
+      usedPrice: "二手机售价",
+      toast: (name, model, months, monthly) => `${name}，${model} 模拟订单已生成：${months} 期，每月 ${monthly}。`
+    });
+
+    const zhColorNames = {
+      Silver: "银色",
+      "Deep Blue": "深蓝色",
+      "Cosmic Orange": "宇宙橙色",
+      "Sky Blue": "天蓝色",
+      "Light Gold": "浅金色",
+      "Cloud White": "云白色",
+      "Space Black": "太空黑色",
+      "Mist Blue": "雾蓝色",
+      Lavender: "薰衣草紫色",
+      Sage: "鼠尾草绿色",
+      White: "白色",
+      Black: "黑色",
+      "Soft Pink": "柔粉色",
+      "Stock Color": "现货颜色"
+    };
+
+    const phones = [
+      {
+        brand: "Apple",
+        model: "iPhone 17 Pro Max",
+        spec: "Pro Max 6.9-inch",
+        source: "Apple Malaysia",
+        type: "Official",
+        tone: "linear-gradient(145deg, #1f2937, #9ca3af)",
+        noteKey: "officialPrice",
+        colors: [
+          { zh: "é“¶è‰²", en: "Silver", ms: "Perak", value: "#d9d6cf", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" },
+          { zh: "æ·±è“è‰²", en: "Deep Blue", ms: "Biru Gelap", value: "#1f2d42", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_blue__li170wg4gkae_large.jpg" },
+          { zh: "å®‡å®™æ©™è‰²", en: "Cosmic Orange", ms: "Oren Kosmik", value: "#d8783f", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_orange__cr2oq3n1dwk2_large.jpg" }
+        ],
+        capacities: [
+          { label: "256GB", price: 5999 },
+          { label: "512GB", price: 6999 },
+          { label: "1TB", price: 7999 },
+          { label: "2TB", price: 9999 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "iPhone 17 Pro",
+        spec: "Pro 6.3-inch",
+        source: "Apple Malaysia",
+        type: "Official",
+        tone: "linear-gradient(145deg, #f97316, #1f2937)",
+        noteKey: "officialPrice",
+        colors: [
+          { zh: "é“¶è‰²", en: "Silver", ms: "Perak", value: "#d9d6cf", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" },
+          { zh: "æ·±è“è‰²", en: "Deep Blue", ms: "Biru Gelap", value: "#1f2d42", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_blue__li170wg4gkae_large.jpg" },
+          { zh: "å®‡å®™æ©™è‰²", en: "Cosmic Orange", ms: "Oren Kosmik", value: "#d8783f", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_orange__cr2oq3n1dwk2_large.jpg" }
+        ],
+        capacities: [
+          { label: "256GB", price: 5499 },
+          { label: "512GB", price: 6499 },
+          { label: "1TB", price: 7499 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "iPhone Air",
+        spec: "6.5-inch",
+        source: "Apple Malaysia",
+        type: "Official",
+        tone: "linear-gradient(145deg, #dbeafe, #111827)",
+        noteKey: "officialFrom",
+        colors: [
+          { zh: "å¤©è“è‰²", en: "Sky Blue", ms: "Biru Langit", value: "#c9d9e8", image: "https://www.apple.com/v/iphone-air/e/images/overview/product-viewer/color_static_ultramarine__cgfuoct82biu_large.jpg" },
+          { zh: "æµ…é‡‘è‰²", en: "Light Gold", ms: "Emas Cerah", value: "#e6dac1", image: "https://www.apple.com/v/iphone-air/e/images/overview/product-viewer/color_static_gold__d1p7qgdkczo2_large.jpg" },
+          { zh: "äº‘ç™½è‰²", en: "Cloud White", ms: "Putih Awan", value: "#f4f1ea", image: "https://www.apple.com/v/iphone-air/e/images/overview/product-viewer/color_static_white__bsqapwl67oj6_large.jpg" },
+          { zh: "å¤ªç©ºé»‘è‰²", en: "Space Black", ms: "Hitam Angkasa", value: "#1f232a", image: "https://www.apple.com/v/iphone-air/e/images/overview/product-viewer/color_static_black__bavqefsedg82_large.jpg" }
+        ],
+        capacities: [
+          { label: "256GB", price: 4999 },
+          { label: "512GB", price: 5999 },
+          { label: "1TB", price: 6999 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "iPhone 17",
+        spec: "6.3-inch",
+        source: "Apple Malaysia",
+        type: "Official",
+        tone: "linear-gradient(145deg, #bfdbfe, #64748b)",
+        noteKey: "officialFrom",
+        colors: [
+          { zh: "é›¾è“è‰²", en: "Mist Blue", ms: "Biru Kabus", value: "#bdd5e7", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_mist_blue__700uff6zu2qa_large.jpg" },
+          { zh: "è–°è¡£è‰ç´«è‰²", en: "Lavender", ms: "Lavender", value: "#d3c4e6", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_lavender__bcaie9a8npj6_large.jpg" },
+          { zh: "é¼ å°¾è‰ç»¿è‰²", en: "Sage", ms: "Sage", value: "#b9c8b9", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_sage__cr1jt90v1yoi_large.jpg" },
+          { zh: "ç™½è‰²", en: "White", ms: "Putih", value: "#f4f2ee", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_white__979ypubjzdum_large.jpg" },
+          { zh: "é»‘è‰²", en: "Black", ms: "Hitam", value: "#22262d", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_black__fzuhc3kqvmq2_large.jpg" }
+        ],
+        capacities: [
+          { label: "256GB", price: 3999 },
+          { label: "512GB", price: 4999 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "iPhone 17e",
+        spec: "6.1-inch",
+        source: "Apple Malaysia",
+        type: "Official",
+        tone: "linear-gradient(145deg, #fbcfe8, #111827)",
+        noteKey: "officialFrom",
+        colors: [
+          { zh: "æŸ”ç²‰è‰²", en: "Soft Pink", ms: "Merah Jambu Lembut", value: "#f1c6cf", image: "https://www.apple.com/v/iphone-17e/b/images/overview/durability/caption-tile-gallery/colors__b1yu552rgbte_large.jpg" },
+          { zh: "ç™½è‰²", en: "White", ms: "Putih", value: "#f4f2ee", image: "https://www.apple.com/v/iphone-17e/b/images/overview/durability/caption-tile-gallery/colors__b1yu552rgbte_large.jpg" },
+          { zh: "é»‘è‰²", en: "Black", ms: "Hitam", value: "#22262d", image: "https://www.apple.com/v/iphone-17e/b/images/overview/durability/caption-tile-gallery/colors__b1yu552rgbte_large.jpg" }
+        ],
+        capacities: [
+          { label: "256GB", price: 2999 },
+          { label: "512GB", price: 3999 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 17 Pro Max",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" }],
+        capacities: [{ label: "256GB XA", price: 5080, cost: 4880 }]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 17 Pro",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" }],
+        capacities: [{ label: "256GB XA", price: 4760, cost: 4560 }]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 16 Pro Max",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" }],
+        capacities: [
+          { label: "1TB Ori Sim", price: 4380, cost: 4180 },
+          { label: "256GB ZP", price: 3750, cost: 3550 },
+          { label: "256GB Ori Sim", price: 3750, cost: 3550 },
+          { label: "512GB Ori Sim", price: 4050, cost: 3850 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 16 Pro",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" }],
+        capacities: [
+          { label: "1TB Ori Sim", price: 4060, cost: 3860 },
+          { label: "128GB Ori Sim", price: 3100, cost: 2900 },
+          { label: "128GB ZP", price: 3150, cost: 2950 },
+          { label: "256GB LL", price: 2950, cost: 2750 },
+          { label: "256GB Ori Sim", price: 3400, cost: 3200 },
+          { label: "256GB ZP", price: 3450, cost: 3250 },
+          { label: "512GB Ori Sim", price: 3740, cost: 3540 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 16 Plus",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_white__979ypubjzdum_large.jpg" }],
+        capacities: [{ label: "256GB Ori Sim", price: 3100, cost: 2900 }]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 16",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_white__979ypubjzdum_large.jpg" }],
+        capacities: [
+          { label: "256GB Ori Sim", price: 2780, cost: 2580 },
+          { label: "512GB Ori Sim", price: 2940, cost: 2740 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 15 Pro Max",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" }],
+        capacities: [
+          { label: "1TB Ori Sim", price: 3250, cost: 3050 },
+          { label: "256GB ZP", price: 3000, cost: 2800 },
+          { label: "512GB LL", price: 2650, cost: 2450 },
+          { label: "512GB Ori Sim", price: 3090, cost: 2890 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 15 Pro",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" }],
+        capacities: [
+          { label: "1TB Ori Sim", price: 2930, cost: 2730 },
+          { label: "1TB ZP", price: 2980, cost: 2780 },
+          { label: "128GB LL", price: 1900, cost: 1700 },
+          { label: "128GB Ori Sim", price: 2300, cost: 2100 },
+          { label: "128GB ZP", price: 2350, cost: 2150 },
+          { label: "256GB LL", price: 2200, cost: 2000 },
+          { label: "256GB Ori Sim", price: 2610, cost: 2410 },
+          { label: "256GB ZP", price: 2660, cost: 2460 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 15 Plus",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_white__979ypubjzdum_large.jpg" }],
+        capacities: [
+          { label: "128GB Ori Sim", price: 2100, cost: 1900 },
+          { label: "128GB ZP", price: 2150, cost: 1950 },
+          { label: "256GB LL", price: 2150, cost: 1950 },
+          { label: "256GB Ori Sim", price: 2350, cost: 2150 },
+          { label: "256GB ZP", price: 2400, cost: 2200 },
+          { label: "512GB Ori Sim", price: 2510, cost: 2310 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 15",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_white__979ypubjzdum_large.jpg" }],
+        capacities: [
+          { label: "128GB LL", price: 1600, cost: 1400 },
+          { label: "128GB Ori Sim", price: 1850, cost: 1650 },
+          { label: "128GB ZP", price: 1850, cost: 1650 },
+          { label: "256GB LL", price: 1950, cost: 1750 },
+          { label: "256GB Ori Sim", price: 2160, cost: 1960 },
+          { label: "256GB ZP", price: 2210, cost: 2010 },
+          { label: "512GB Ori Sim", price: 2320, cost: 2120 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 14 Pro Max",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" }],
+        capacities: [
+          { label: "1TB Ori Sim", price: 2760, cost: 2560 },
+          { label: "128GB ZP", price: 2200, cost: 2000 },
+          { label: "256GB LL", price: 2200, cost: 2000 },
+          { label: "256GB Ori Sim", price: 2450, cost: 2250 },
+          { label: "256GB ZP", price: 2500, cost: 2300 },
+          { label: "512GB LL", price: 2300, cost: 2100 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 14 Pro",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" }],
+        capacities: [
+          { label: "1TB LL", price: 2100, cost: 1900 },
+          { label: "1TB Ori Sim", price: 2450, cost: 2250 },
+          { label: "128GB ZP", price: 1850, cost: 1650 },
+          { label: "256GB LL", price: 1800, cost: 1600 },
+          { label: "256GB Ori Sim", price: 2150, cost: 1950 },
+          { label: "256GB ZP", price: 2200, cost: 2000 },
+          { label: "512GB Ori Sim", price: 2280, cost: 2080 },
+          { label: "512GB ZP", price: 2330, cost: 2130 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 14 Plus",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_white__979ypubjzdum_large.jpg" }],
+        capacities: [
+          { label: "128GB LL", price: 1420, cost: 1220 },
+          { label: "128GB Ori Sim", price: 1540, cost: 1340 },
+          { label: "128GB ZP", price: 1590, cost: 1390 },
+          { label: "256GB LL", price: 1610, cost: 1410 },
+          { label: "256GB Ori Sim", price: 1740, cost: 1540 },
+          { label: "256GB ZP", price: 1790, cost: 1590 },
+          { label: "512GB Ori Sim", price: 1900, cost: 1700 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 14",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_white__979ypubjzdum_large.jpg" }],
+        capacities: [
+          { label: "128GB ZP", price: 1430, cost: 1230 },
+          { label: "256GB LL", price: 1480, cost: 1280 },
+          { label: "256GB Ori Sim", price: 1610, cost: 1410 },
+          { label: "256GB ZP", price: 1660, cost: 1460 },
+          { label: "512GB Ori Sim", price: 1700, cost: 1500 },
+          { label: "512GB ZP", price: 1750, cost: 1550 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 13 Pro Max",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" }],
+        capacities: [
+          { label: "1TB LL", price: 2080, cost: 1880 },
+          { label: "1TB ZP", price: 2110, cost: 1910 },
+          { label: "128GB LL", price: 1650, cost: 1450 },
+          { label: "128GB ZP", price: 1680, cost: 1480 },
+          { label: "256GB LL", price: 1880, cost: 1680 },
+          { label: "256GB ZP", price: 1910, cost: 1710 },
+          { label: "512GB LL", price: 1980, cost: 1780 },
+          { label: "512GB ZP", price: 2010, cost: 1810 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 13 Pro",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" }],
+        capacities: [
+          { label: "128GB LL", price: 1500, cost: 1300 },
+          { label: "128GB ZP", price: 1530, cost: 1330 },
+          { label: "256GB LL", price: 1630, cost: 1430 },
+          { label: "256GB ZP", price: 1660, cost: 1460 },
+          { label: "512GB LL", price: 1730, cost: 1530 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 13 Mini",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_white__979ypubjzdum_large.jpg" }],
+        capacities: [
+          { label: "128GB LL", price: 1020, cost: 820 },
+          { label: "128GB ZP", price: 1050, cost: 850 },
+          { label: "256GB LL", price: 1120, cost: 920 },
+          { label: "256GB ZP", price: 1150, cost: 950 }
+        ]
+      },
+      {
+        brand: "Apple",
+        model: "Used iPhone 13",
+        spec: "Second Hand - Grade A+ - 3 Month Warranty",
+        source: "EDCOM TELESHOP",
+        type: "Used",
+        tone: "linear-gradient(145deg, #f8fafc, #1f2937)",
+        noteKey: "usedPrice",
+        colors: [{ zh: "çŽ°è´§é¢œè‰²", en: "Stock Color", ms: "Warna Stok", value: "#d8d5ce", image: "https://www.apple.com/v/iphone-17/e/images/overview/product-viewer/colors_white__979ypubjzdum_large.jpg" }],
+        capacities: [
+          { label: "128GB LL", price: 1210, cost: 1010 },
+          { label: "128GB ZP", price: 1240, cost: 1040 },
+          { label: "256GB LL", price: 1310, cost: 1110 },
+          { label: "256GB ZP", price: 1340, cost: 1140 },
+          { label: "512GB LL", price: 1410, cost: 1210 }
+        ]
+      }
+    ];
+
+    phones.forEach((phone) => {
+      if (phone.type === "Used") {
+        phone.capacities = phone.capacities.filter((capacity) => /\b(LL|ZP|XA)\b/i.test(capacity.label));
+      }
+    });
+
+    const modelPhotos = {
+      "iPhone 17 Pro Max": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-17-pro-max-colors.png",
+      "iPhone 17 Pro": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-17-pro-colors.png",
+      "iPhone Air": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-air-colors.png",
+      "iPhone 17": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-17-colors.png",
+      "iPhone 17e": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-17e/iphone-17e-colors.png",
+      "iPhone 16 Pro Max": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-16-pro-max-colors.png",
+      "iPhone 16 Pro": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-16-pro-colors.png",
+      "iPhone 16 Plus": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-16-plus-colors.png",
+      "iPhone 16": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-16-colors.png",
+      "iPhone 15 Pro Max": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/fall-2023-iphone-colors-iphone-15-pro-max.png",
+      "iPhone 15 Pro": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/fall-2023-iphone-colors-iphone-15-pro.png",
+      "iPhone 15 Plus": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/fall-2023-iphone-colors-iphone-15-plus.png",
+      "iPhone 15": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/fall-2023-iphone-colors-iphone-15.png",
+      "iPhone 14 Pro Max": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-14-pro-max-colors.png",
+      "iPhone 14 Pro": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-14-pro-colors.png",
+      "iPhone 14 Plus": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-14-plus-colors-spring-2023.png",
+      "iPhone 14": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/iphone-14-colors-spring-2023.png",
+      "iPhone 13 Pro Max": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/2022-spring-iphone13-pro-max-colors.png",
+      "iPhone 13 Pro": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/2022-spring-iphone13-pro-colors.png",
+      "iPhone 13 Mini": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/2022-iphone13-mini-colors.png",
+      "iPhone 13": "https://cdsassets.apple.com/live/7WUAS350/images/iphone/2022-spring-iphone13-colors.png"
+    };
+
+    const terms = [
+      { months: 3, rate: 0.15 },
+      { months: 6, rate: 0.15 },
+      { months: 8, rate: 0.15 }
+    ];
+
+    const brands = ["Apple"];
+
+    const state = {
+      lang: "zh",
+      brand: "Apple",
+      search: "",
+      sort: "featured",
+      source: "all",
+      selectedIndex: 0,
+      colorIndex: 0,
+      capacityIndex: 0,
+      downPercent: 40,
+      termIndex: 2
+    };
+
+    const currency = new Intl.NumberFormat("en-MY", {
+      style: "currency",
+      currency: "MYR",
+      maximumFractionDigits: 0
+    });
+
+    const els = {
+      languageSelect: document.getElementById("languageSelect"),
+      brandTitle: document.getElementById("brandTitle"),
+      priceUpdated: document.getElementById("priceUpdated"),
+      heroSection: document.getElementById("heroSection"),
+      heroTitle: document.getElementById("heroTitle"),
+      heroCopy: document.getElementById("heroCopy"),
+      catalogPanel: document.getElementById("catalogPanel"),
+      catalogTitle: document.getElementById("catalogTitle"),
+      brandTabs: document.getElementById("brandTabs"),
+      phoneGrid: document.getElementById("phoneGrid"),
+      catalogCount: document.getElementById("catalogCount"),
+      searchInput: document.getElementById("searchInput"),
+      sortSelect: document.getElementById("sortSelect"),
+      sourceSelect: document.getElementById("sourceSelect"),
+      summaryPanel: document.getElementById("summaryPanel"),
+      summaryTitle: document.getElementById("summaryTitle"),
+      summaryCopy: document.getElementById("summaryCopy"),
+      monthlyUnit: document.getElementById("monthlyUnit"),
+      monthlyPay: document.getElementById("monthlyPay"),
+      chosenName: document.getElementById("chosenName"),
+      chosenSpec: document.getElementById("chosenSpec"),
+      phoneMini: document.getElementById("phoneMini"),
+      phoneImage: document.getElementById("phoneImage"),
+      colorLabel: document.getElementById("colorLabel"),
+      colorSection: document.getElementById("colorLabel")?.closest(".choice-block"),
+      colorText: document.getElementById("colorText"),
+      colorButtons: document.getElementById("colorButtons"),
+      capacityLabel: document.getElementById("capacityLabel"),
+      capacityText: document.getElementById("capacityText"),
+      capacityButtons: document.getElementById("capacityButtons"),
+      downPayment: document.getElementById("downPayment"),
+      downPaymentLabel: document.getElementById("downPaymentLabel"),
+      downPaymentText: document.getElementById("downPaymentText"),
+      termLabel: document.getElementById("termLabel"),
+      termButtons: document.getElementById("termButtons"),
+      rateText: document.getElementById("rateText"),
+      priceRowLabel: document.getElementById("priceRowLabel"),
+      summaryPrice: document.getElementById("summaryPrice"),
+      capacityRowLabel: document.getElementById("capacityRowLabel"),
+      summaryCapacity: document.getElementById("summaryCapacity"),
+      colorRowLabel: document.getElementById("colorRowLabel"),
+      summaryColor: document.getElementById("summaryColor"),
+      downRowLabel: document.getElementById("downRowLabel"),
+      summaryDown: document.getElementById("summaryDown"),
+      monthlyRowLabel: document.getElementById("monthlyRowLabel"),
+      summaryMonthly: document.getElementById("summaryMonthly"),
+      noticeText: document.getElementById("noticeText"),
+      eligibilityTitle: document.getElementById("eligibilityTitle"),
+      eligibilityItem1: document.getElementById("eligibilityItem1"),
+      eligibilityItem2: document.getElementById("eligibilityItem2"),
+      eligibilityItem3: document.getElementById("eligibilityItem3"),
+      eligibilityItem4: document.getElementById("eligibilityItem4"),
+      eligibilityItem5: document.getElementById("eligibilityItem5"),
+      eligibilityItem6: document.getElementById("eligibilityItem6"),
+      nameLabel: document.getElementById("nameLabel"),
+      name: document.getElementById("name"),
+      phoneLabel: document.getElementById("phoneLabel"),
+      phone: document.getElementById("phone"),
+      stateLabel: document.getElementById("stateLabel"),
+      deliveryState: document.getElementById("state"),
+      submitButton: document.getElementById("submitButton"),
+      fineprint: document.getElementById("fineprint"),
+      checkoutForm: document.getElementById("checkoutForm"),
+      toast: document.getElementById("toast")
+    };
+
+    function t(key) {
+      return translations[state.lang][key];
+    }
+
+    function getBasePrice(phone) {
+      return phone.capacities[0].price;
+    }
+
+    function selectedPhone() {
+      return phones[state.selectedIndex] || phones[0];
+    }
+
+    function selectedCapacity() {
+      const phone = selectedPhone();
+      if (!phone.capacities[state.capacityIndex]) {
+        state.capacityIndex = 0;
+      }
+      return phone.capacities[state.capacityIndex];
+    }
+
+    function selectedColor() {
+      const phone = selectedPhone();
+      if (!phone.colors[state.colorIndex]) {
+        state.colorIndex = 0;
+      }
+      return phone.colors[state.colorIndex];
+    }
+
+    function cleanModelName(model) {
+      return model.replace(/^Used\s+/, "");
+    }
+
+    function modelPhoto(phone) {
+      return modelPhotos[cleanModelName(phone.model)] || phone.colors[0]?.image || "";
+    }
+
+    function colorName(color) {
+      if (state.lang === "zh" && zhColorNames[color.en]) {
+        return zhColorNames[color.en];
+      }
+      return color[state.lang] || color.en;
+    }
+
+    function adjustHex(hex, amount) {
+      const value = hex.replace("#", "");
+      const num = parseInt(value, 16);
+      const r = Math.max(0, Math.min(255, (num >> 16) + amount));
+      const g = Math.max(0, Math.min(255, ((num >> 8) & 255) + amount));
+      const b = Math.max(0, Math.min(255, (num & 255) + amount));
+      return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+    }
+
+    function colorCardStyle(color) {
+      const deep = adjustHex(color.value, -34);
+      const soft = `linear-gradient(145deg, ${adjustHex(color.value, 72)}, rgba(255, 255, 255, 0.72))`;
+      return `--color: ${color.value}; --color-deep: ${deep}; --color-soft: ${soft}`;
+    }
+
+    function applyStaticTranslations() {
+      document.documentElement.lang = t("htmlLang");
+      document.title = t("docTitle");
+      els.languageSelect.options[0].textContent = "中文";
+      document.querySelectorAll(".checkmark").forEach((item) => {
+        item.textContent = "✓";
+      });
+      els.languageSelect.value = state.lang;
+      els.brandTitle.textContent = t("brandTitle");
+      els.priceUpdated.textContent = t("priceUpdated");
+      els.heroSection.setAttribute("aria-label", t("heroAria"));
+      els.heroTitle.textContent = t("heroTitle");
+      els.heroCopy.textContent = t("heroCopy");
+      els.catalogPanel.setAttribute("aria-label", t("catalogAria"));
+      els.catalogTitle.textContent = t("catalogTitle");
+      els.searchInput.placeholder = t("searchPlaceholder");
+      els.sortSelect.setAttribute("aria-label", t("sortAria"));
+      els.sortSelect.options[0].textContent = t("sortFeatured");
+      els.sortSelect.options[1].textContent = t("sortLow");
+      els.sortSelect.options[2].textContent = t("sortHigh");
+      els.sourceSelect.setAttribute("aria-label", t("sourceAria"));
+      els.sourceSelect.options[0].textContent = t("sourceAll");
+      els.sourceSelect.options[1].textContent = t("sourceOfficial");
+      els.sourceSelect.options[2].textContent = t("sourceUsed");
+      els.summaryPanel.setAttribute("aria-label", t("summaryAria"));
+      els.summaryTitle.textContent = t("summaryTitle");
+      els.summaryCopy.textContent = t("summaryCopy");
+      els.monthlyUnit.textContent = t("monthlyUnit");
+      els.colorLabel.textContent = t("colorLabel");
+      els.capacityLabel.textContent = t("capacityLabel");
+      els.capacityRowLabel.textContent = t("capacityRowLabel");
+      els.downPaymentLabel.textContent = t("downPaymentLabel");
+      els.termLabel.textContent = t("termLabel");
+      els.priceRowLabel.textContent = t("priceRowLabel");
+      els.colorRowLabel.textContent = t("colorRowLabel");
+      els.downRowLabel.textContent = t("downRowLabel");
+      els.monthlyRowLabel.textContent = t("monthlyRowLabel");
+      els.noticeText.textContent = t("noticeText");
+      els.eligibilityTitle.textContent = t("eligibilityTitle");
+      els.eligibilityItem1.textContent = t("eligibilityItem1");
+      els.eligibilityItem2.textContent = t("eligibilityItem2");
+      els.eligibilityItem3.textContent = t("eligibilityItem3");
+      els.eligibilityItem4.textContent = t("eligibilityItem4");
+      els.eligibilityItem5.textContent = t("eligibilityItem5");
+      els.eligibilityItem6.textContent = t("eligibilityItem6");
+      els.nameLabel.textContent = t("nameLabel");
+      els.name.placeholder = t("namePlaceholder");
+      els.phoneLabel.textContent = t("phoneLabel");
+      els.phone.placeholder = t("phonePlaceholder");
+      els.stateLabel.textContent = t("stateLabel");
+      els.deliveryState.options[0].textContent = t("statePlaceholder");
+      els.submitButton.textContent = t("submitButton");
+      els.fineprint.textContent = t("fineprint");
+    }
+
+    function filteredPhones() {
+      const needle = state.search.trim().toLowerCase();
+      let list = phones
+        .map((phone, index) => ({ ...phone, index }))
+        .filter((phone) => phone.capacities.length)
+        .filter((phone) => state.brand === "All" || phone.brand === state.brand)
+        .filter((phone) => state.source === "all" || phone.type === state.source)
+        .filter((phone) => {
+          if (!needle) return true;
+          return `${phone.brand} ${phone.model} ${phone.spec} ${phone.source}`.toLowerCase().includes(needle);
+        });
+
+      if (state.sort === "low") {
+        list = list.sort((a, b) => getBasePrice(a) - getBasePrice(b));
+      }
+
+      if (state.sort === "high") {
+        list = list.sort((a, b) => getBasePrice(b) - getBasePrice(a));
+      }
+
+      return list;
+    }
+
+    function renderTabs() {
+      els.brandTabs.innerHTML = brands.map((brand) => `
+        <button class="tab ${state.brand === brand ? "is-active" : ""}" type="button" data-brand="${brand}" aria-pressed="${state.brand === brand}">
+          Apple
+        </button>
+      `).join("");
+    }
+
+    function renderTerms() {
+      els.termButtons.innerHTML = terms.map((term, index) => `
+        <button class="term-button ${index === state.termIndex ? "is-active" : ""}" type="button" data-term="${index}" aria-pressed="${index === state.termIndex}">
+          ${term.months} ${t("termSuffix")}
+        </button>
+      `).join("");
+    }
+
+    function productCard(phone) {
+      return `
+        <button class="phone-card ${phone.index === state.selectedIndex ? "is-active" : ""}" type="button" data-phone="${phone.index}" aria-pressed="${phone.index === state.selectedIndex}">
+          <div class="card-top">
+            <span class="brand-badge">${phone.brand}</span>
+          </div>
+          <div class="phone-card-media">
+            <img src="${modelPhoto(phone)}" alt="${phone.model}">
+          </div>
+          <div>
+            <h3 class="phone-name">${phone.model}</h3>
+            <p class="phone-spec">${phone.spec} | ${phone.capacities.map((capacity) => capacity.label).join(" / ")}</p>
+          </div>
+          <div class="price-row">
+            <strong>${currency.format(getBasePrice(phone))}</strong>
+            <span>${t("priceMarket")}<br>${t("priceKind")}</span>
+          </div>
+        </button>
+      `;
+    }
+
+    function productSection(type, list) {
+      if (!list.length) return "";
+      const title = type === "Official" ? t("newSectionTitle") : t("usedSectionTitle");
+      return `
+        <section class="phone-section" aria-label="${title}">
+          <div class="phone-section-head">
+            <h3>${title}</h3>
+            <span>${list.length} ${t("countSuffix")}</span>
+          </div>
+          <div class="phone-section-grid">
+            ${list.map(productCard).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderGrid() {
+      const list = filteredPhones();
+      els.catalogCount.textContent = `${list.length} ${t("countSuffix")}`;
+
+      if (!list.length) {
+        els.phoneGrid.innerHTML = `
+          <article class="phone-card">
+            <div class="card-top"><span class="brand-badge">${t("noResultsBadge")}</span></div>
+            <div>
+              <h3 class="phone-name">${t("noResultsTitle")}</h3>
+              <p class="phone-spec">${t("noResultsCopy")}</p>
+            </div>
+            <div class="price-row"><strong>RM0</strong><span>${t("noPrice")}</span></div>
+          </article>
+        `;
+        return;
+      }
+
+      if (!list.some((phone) => phone.index === state.selectedIndex)) {
+        state.selectedIndex = list[0].index;
+      }
+
+      const official = list.filter((phone) => phone.type === "Official");
+      const used = list.filter((phone) => phone.type === "Used");
+      els.phoneGrid.innerHTML = [
+        productSection("Official", official),
+        productSection("Used", used)
+      ].join("");
+    }
+
+    function renderColor() {
+      const phone = selectedPhone();
+      if (!phone.colors[state.colorIndex]) {
+        state.colorIndex = 0;
+      }
+      const color = selectedColor();
+      els.colorText.textContent = colorName(color);
+      els.colorButtons.innerHTML = phone.colors.map((item, index) => `
+        <button class="color-button ${index === state.colorIndex ? "is-active" : ""}" type="button" data-color="${index}" aria-pressed="${index === state.colorIndex}" title="${colorName(item)}" style="${colorCardStyle(item)}">
+          <span class="color-dot"></span>
+          <span class="color-name">${colorName(item)}</span>
+        </button>
+      `).join("");
+    }
+
+    function renderCapacity() {
+      const phone = selectedPhone();
+      if (!phone.capacities[state.capacityIndex]) {
+        state.capacityIndex = 0;
+      }
+      const capacity = selectedCapacity();
+      els.capacityText.textContent = capacity.label;
+      els.capacityButtons.innerHTML = phone.capacities.map((item, index) => `
+        <button class="capacity-button ${index === state.capacityIndex ? "is-active" : ""}" type="button" data-capacity="${index}" aria-pressed="${index === state.capacityIndex}">
+          ${item.label}
+          <span>${currency.format(item.price)}</span>
+        </button>
+      `).join("");
+    }
+
+    function calculate() {
+      const phone = selectedPhone();
+      const color = selectedColor();
+      const capacity = selectedCapacity();
+      const term = terms[state.termIndex];
+      const price = capacity.price;
+      const downPayment = Math.round(price * state.downPercent / 100);
+      const principal = price - downPayment;
+      const fee = Math.round(principal * term.rate * term.months);
+      const total = principal + fee;
+      const monthly = Math.ceil(total / term.months);
+
+      return { phone, color, capacity, term, price, downPayment, principal, fee, total, monthly };
+    }
+
+    function renderSummary() {
+      const result = calculate();
+      const imageAlt = `${result.phone.model} ${result.capacity.label} ${colorName(result.color)}`;
+      const imageSrc = modelPhoto(result.phone);
+      els.monthlyPay.textContent = currency.format(result.monthly);
+      els.chosenName.textContent = result.phone.model;
+      els.chosenSpec.textContent = `${result.phone.brand} | ${result.phone.spec} | ${result.capacity.label} | ${colorName(result.color)}`;
+      els.phoneImage.src = imageSrc;
+      els.phoneImage.alt = imageAlt;
+      els.phoneMini.setAttribute("aria-label", imageAlt);
+      els.downPaymentText.textContent = `${state.downPercent}%`;
+      els.rateText.textContent = "";
+      els.colorText.textContent = colorName(result.color);
+      els.capacityText.textContent = result.capacity.label;
+      els.summaryPrice.textContent = currency.format(result.price);
+      els.summaryCapacity.textContent = result.capacity.label;
+      els.summaryColor.textContent = colorName(result.color);
+      els.summaryDown.textContent = currency.format(result.downPayment);
+      els.summaryMonthly.textContent = currency.format(result.monthly);
+    }
+
+    function render() {
+      applyStaticTranslations();
+      renderTabs();
+      renderGrid();
+      renderColor();
+      renderCapacity();
+      renderTerms();
+      renderSummary();
+    }
+
+    function showToast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("is-visible");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => els.toast.classList.remove("is-visible"), 3200);
+    }
+
+    document.addEventListener("click", (event) => {
+      const brandButton = event.target.closest("[data-brand]");
+      const phoneButton = event.target.closest("[data-phone]");
+      const colorButton = event.target.closest("[data-color]");
+      const capacityButton = event.target.closest("[data-capacity]");
+      const termButton = event.target.closest("[data-term]");
+
+      if (brandButton) {
+        state.brand = brandButton.dataset.brand;
+        render();
+      }
+
+      if (phoneButton) {
+        state.selectedIndex = Number(phoneButton.dataset.phone);
+        state.colorIndex = 0;
+        state.capacityIndex = 0;
+        render();
+        window.setTimeout(() => {
+          els.colorSection?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 80);
+      }
+
+      if (colorButton) {
+        state.colorIndex = Number(colorButton.dataset.color);
+        renderColor();
+        renderSummary();
+      }
+
+      if (capacityButton) {
+        state.capacityIndex = Number(capacityButton.dataset.capacity);
+        renderCapacity();
+        renderSummary();
+      }
+
+      if (termButton) {
+        state.termIndex = Number(termButton.dataset.term);
+        render();
+      }
+    });
+
+    els.searchInput.addEventListener("input", (event) => {
+      state.search = event.target.value;
+      render();
+    });
+
+    els.sortSelect.addEventListener("change", (event) => {
+      state.sort = event.target.value;
+      render();
+    });
+
+    els.sourceSelect.addEventListener("change", (event) => {
+      state.source = event.target.value;
+      render();
+    });
+
+    els.languageSelect.addEventListener("change", (event) => {
+      state.lang = event.target.value;
+      render();
+    });
+
+    els.downPayment.addEventListener("input", (event) => {
+      state.downPercent = Number(event.target.value);
+      renderSummary();
+    });
+
+    els.checkoutForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const result = calculate();
+      const name = new FormData(els.checkoutForm).get("name");
+      showToast(t("toast")(name, result.phone.model, result.term.months, currency.format(result.monthly)));
+    });
+
+    render();
+  </script>
+</body>
+</html>
+
+
