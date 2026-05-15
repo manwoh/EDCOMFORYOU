@@ -66,6 +66,10 @@ function formatInstallmentCurrency(value: number) {
   return installmentCurrency.format(value);
 }
 
+function dailyAmount(monthly: number) {
+  return Math.round((monthly / 30) * 100) / 100;
+}
+
 function getBasePrice(phone: Phone) {
   return phone.capacities[0]?.price ?? 0;
 }
@@ -142,17 +146,17 @@ function getToastMessage(
   name: string,
   model: string,
   months: number,
-  monthly: string
+  daily: string
 ) {
   if (lang === "en") {
-    return `${name}, your demo order for ${model} is ready: ${months} months, ${monthly} per month.`;
+    return `${name}, your demo order for ${model} is ready: ${months} months, ${daily} per day.`;
   }
 
   if (lang === "ms") {
-    return `${name}, pesanan demo untuk ${model} telah dijana: ${months} bulan, ${monthly} sebulan.`;
+    return `${name}, pesanan demo untuk ${model} telah dijana: ${months} bulan, ${daily} sehari.`;
   }
 
-  return `${name}，${model} 模拟订单已生成：${months} 期，每月 ${monthly}。`;
+  return `${name}，${model} 模拟订单已生成：${months} 期，每天 ${daily}。`;
 }
 
 function SearchIcon() {
@@ -284,6 +288,7 @@ export default function InstallmentApp() {
   const officialPhones = filteredPhones.filter((phone) => phone.type === "Official");
   const usedPhones = filteredPhones.filter((phone) => phone.type === "Used");
   const imageAlt = `${result.phone.model} ${result.capacity.label} ${colorName(result.color, lang)}`;
+  const resultDaily = dailyAmount(result.monthly);
 
   function selectPhone(phone: Phone) {
     setSelectedModel(phone.model);
@@ -359,7 +364,7 @@ export default function InstallmentApp() {
       `手机售价: ${formatCurrency(result.price)}`,
       `首付: ${formatCurrency(result.downPayment)} (${downPercent}%)`,
       `分期期数: ${result.term.months} 个月`,
-      `每期还款: ${formatInstallmentCurrency(result.monthly)}`,
+      `一天还款: ${formatInstallmentCurrency(resultDaily)}`,
       "",
       "顾客上传文件:",
       `身份证 IC: ${uploadLinks.identity_card_url || "未上传"}`,
@@ -370,7 +375,7 @@ export default function InstallmentApp() {
     ].filter(Boolean).join("\n");
     const whatsappUrl = `https://wa.me/60127080588?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-    showToast(getToastMessage(lang, name, result.phone.model, result.term.months, formatInstallmentCurrency(result.monthly)));
+    showToast(getToastMessage(lang, name, result.phone.model, result.term.months, formatInstallmentCurrency(resultDaily)));
     setIsSubmitting(false);
   }
 
@@ -548,9 +553,8 @@ export default function InstallmentApp() {
           <section className="panel summary" aria-label={strings.summaryAria}>
             <div className="summary-head">
               <h2>{strings.summaryTitle}</h2>
-              <p>{strings.summaryCopy}</p>
               <div className="monthly">
-                <strong>{formatInstallmentCurrency(result.monthly)}</strong>
+                <strong>{formatInstallmentCurrency(resultDaily)}</strong>
                 <span>{strings.monthlyUnit}</span>
               </div>
             </div>
@@ -676,7 +680,7 @@ export default function InstallmentApp() {
                 <SummaryRow label={strings.downRowLabel} value={formatCurrency(result.downPayment)} />
                 <SummaryRow
                   label={strings.monthlyRowLabel}
-                  value={formatInstallmentCurrency(result.monthly)}
+                  value={formatInstallmentCurrency(resultDaily)}
                 />
               </div>
 
@@ -844,7 +848,7 @@ function LatestProductPanel({
           </div>
           <div>
             <span>{strings.latestMonthly}</span>
-            <strong>{formatInstallmentCurrency(result.monthly)}</strong>
+            <strong>{formatInstallmentCurrency(dailyAmount(result.monthly))}</strong>
           </div>
           <div>
             <span>{strings.latestStorage}</span>
@@ -938,7 +942,7 @@ function ProductCard({
     term,
     downPercent
   );
-  const dailyFrom = preview.monthly / 30;
+  const dailyFrom = dailyAmount(preview.monthly);
 
   return (
     <button
