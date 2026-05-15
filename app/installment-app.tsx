@@ -417,25 +417,13 @@ export default function InstallmentApp() {
       <main className="page">
         <section className="left">
           <section className="hero" aria-label={strings.heroAria}>
-            <div className="hero-banner-copy">
-              <span>iPhone 17</span>
-              <strong>PRO</strong>
-              <em>MAX</em>
+            <div className="hero-minimal-copy">
+              <span>手机出租配套</span>
+              <h2>iPhone 17 Pro Max</h2>
+              <p>租借一天最低</p>
             </div>
             <img
-              className="hero-banner-phone hero-banner-blue"
-              src="https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_blue__li170wg4gkae_large.jpg"
-              alt="iPhone 17 Pro Max deep blue"
-              onError={handleImageError}
-            />
-            <img
-              className="hero-banner-phone hero-banner-orange"
-              src="https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_orange__cr2oq3n1dwk2_large.jpg"
-              alt="iPhone 17 Pro Max cosmic orange"
-              onError={handleImageError}
-            />
-            <img
-              className="hero-banner-phone hero-banner-silver"
+              className="hero-minimal-phone"
               src="/assets/phones/official-polished/iphone-17-pro-max.png"
               alt="iPhone 17 Pro Max silver"
               onError={handleImageError}
@@ -801,7 +789,6 @@ function PromoVideoPanel() {
           autoPlay
           controls
           loop
-          muted
           playsInline
           preload="metadata"
           poster="/assets/phones/official-polished/iphone-17-pro-max.png"
