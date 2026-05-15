@@ -751,6 +751,12 @@ export default function InstallmentApp() {
 }
 
 function PromoVideoPanel() {
+  const facebookVideoUrl =
+    "https://www.facebook.com/100007998093450/videos/pcb.4563034177306474/953551917597455";
+  const facebookEmbedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(
+    facebookVideoUrl
+  )}&show_text=false&width=1280`;
+
   return (
     <section className="promo-video-panel" aria-label="宣传视频">
       <div className="promo-video-copy">
@@ -762,14 +768,13 @@ function PromoVideoPanel() {
         </a>
       </div>
       <div className="promo-video-frame">
-        <video
-          controls
-          playsInline
-          preload="metadata"
-          poster="/assets/apple-iphone-premium-cover.png"
-        >
-          <source src="/assets/promo/edcom-promo.mp4" type="video/mp4" />
-        </video>
+        <iframe
+          src={facebookEmbedUrl}
+          title="EDCOM TELESHOP Facebook 宣传视频"
+          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+          allowFullScreen
+          loading="lazy"
+        />
       </div>
     </section>
   );
