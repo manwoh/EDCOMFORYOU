@@ -116,7 +116,19 @@ export const translations = {
     "latestColors": "颜色",
     "latestSelectButton": "选择最新款",
     "latestBadge": "最新",
-    "selectedBadge": "已选"
+    "selectedBadge": "已选",
+    "heroRentalLabel": "手机出租配套",
+    "heroDailyLabel": "租借一天最低",
+    "malaysianCitizen": "马来西亚公民",
+    "nonMalaysianCitizen": "非马来西亚公民",
+    "deposit40": "40% 首付",
+    "deposit50": "50% 首付",
+    "submittingLabel": "正在上传...",
+    "promoTag": "宣传视频",
+    "promoTitle": "欢迎光临，让我们为你服务",
+    "promoCopy": "更多疑问可以 WhatsApp 咨询",
+    "whatsappCta": "WhatsApp 咨询",
+    "dailyFromLabel": "最低一天"
   },
   "en": {
     "htmlLang": "en",
@@ -196,7 +208,19 @@ export const translations = {
     "feePrefix": "Monthly interest",
     "officialPrice": "Official price",
     "officialFrom": "Official starting price",
-    "usedPrice": "Used price"
+    "usedPrice": "Used price",
+    "heroRentalLabel": "Phone Rental Plan",
+    "heroDailyLabel": "Lowest daily rental",
+    "malaysianCitizen": "Malaysian citizen",
+    "nonMalaysianCitizen": "Non-Malaysian citizen",
+    "deposit40": "40% deposit",
+    "deposit50": "50% deposit",
+    "submittingLabel": "Uploading...",
+    "promoTag": "Promo video",
+    "promoTitle": "Welcome, let us serve you",
+    "promoCopy": "For more questions, contact us on WhatsApp",
+    "whatsappCta": "WhatsApp inquiry",
+    "dailyFromLabel": "Lowest per day"
   },
   "ms": {
     "htmlLang": "ms",
@@ -276,7 +300,19 @@ export const translations = {
     "latestColors": "Warna",
     "latestSelectButton": "Pilih model terkini",
     "latestBadge": "Terkini",
-    "selectedBadge": "Dipilih"
+    "selectedBadge": "Dipilih",
+    "heroRentalLabel": "Pakej Sewa Telefon",
+    "heroDailyLabel": "Sewa harian terendah",
+    "malaysianCitizen": "Warganegara Malaysia",
+    "nonMalaysianCitizen": "Bukan warganegara Malaysia",
+    "deposit40": "Deposit 40%",
+    "deposit50": "Deposit 50%",
+    "submittingLabel": "Sedang muat naik...",
+    "promoTag": "Video promosi",
+    "promoTitle": "Selamat datang, biar kami bantu anda",
+    "promoCopy": "Sebarang pertanyaan boleh hubungi WhatsApp",
+    "whatsappCta": "Tanya WhatsApp",
+    "dailyFromLabel": "Terendah sehari"
   }
 } as const;
 

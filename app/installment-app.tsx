@@ -408,8 +408,8 @@ export default function InstallmentApp() {
             onChange={(event) => setLang(event.target.value as LanguageCode)}
           >
             <option value="zh">中文</option>
+            <option value="ms">Melayu</option>
             <option value="en">English</option>
-            <option value="ms">BM</option>
           </select>
         </div>
       </header>
@@ -418,9 +418,9 @@ export default function InstallmentApp() {
         <section className="left">
           <section className="hero" aria-label={strings.heroAria}>
             <div className="hero-minimal-copy">
-              <span>手机出租配套</span>
+              <span>{strings.heroRentalLabel}</span>
               <h2>iPhone 17 Pro Max</h2>
-              <p>租借一天最低</p>
+              <p>{strings.heroDailyLabel}</p>
             </div>
             <img
               className="hero-minimal-phone"
@@ -430,7 +430,7 @@ export default function InstallmentApp() {
             />
           </section>
 
-          <PromoVideoPanel />
+          <PromoVideoPanel strings={strings} />
 
           <LatestProductPanel
             phone={latestPhone}
@@ -626,8 +626,8 @@ export default function InstallmentApp() {
                     aria-pressed={downPercent === 40}
                     onClick={() => setDownPercent(40)}
                   >
-                    马来西亚公民
-                    <span>40% 首付</span>
+                    {strings.malaysianCitizen}
+                    <span>{strings.deposit40}</span>
                   </button>
                   <button
                     className={`citizenship-button ${downPercent === 50 ? "is-active" : ""}`}
@@ -635,8 +635,8 @@ export default function InstallmentApp() {
                     aria-pressed={downPercent === 50}
                     onClick={() => setDownPercent(50)}
                   >
-                    非马来西亚公民
-                    <span>50% 首付</span>
+                    {strings.nonMalaysianCitizen}
+                    <span>{strings.deposit50}</span>
                   </button>
                 </div>
               </div>
@@ -756,7 +756,7 @@ export default function InstallmentApp() {
                   </div>
                 </div>
                 <button className="submit" type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "正在上传..." : strings.submitButton}
+                  {isSubmitting ? strings.submittingLabel : strings.submitButton}
                 </button>
               </form>
 
@@ -773,15 +773,15 @@ export default function InstallmentApp() {
   );
 }
 
-function PromoVideoPanel() {
+function PromoVideoPanel({ strings }: { strings: Strings }) {
   return (
-    <section className="promo-video-panel" aria-label="宣传视频">
+    <section className="promo-video-panel" aria-label={strings.promoTag}>
       <div className="promo-video-copy">
-        <span>宣传视频</span>
-        <h2>欢迎光临，让我们为你服务</h2>
-        <p>更多疑问可以 WhatsApp 咨询</p>
+        <span>{strings.promoTag}</span>
+        <h2>{strings.promoTitle}</h2>
+        <p>{strings.promoCopy}</p>
         <a href="https://wa.me/60127080588" target="_blank" rel="noopener noreferrer">
-          WhatsApp 咨询
+          {strings.whatsappCta}
         </a>
       </div>
       <div className="promo-video-frame">
@@ -969,7 +969,7 @@ function ProductCard({
         </span>
       </div>
       <div className="installment-preview">
-        <span>最低一天</span>
+        <span>{strings.dailyFromLabel}</span>
         <strong>{formatInstallmentCurrency(dailyFrom)}</strong>
       </div>
     </button>
