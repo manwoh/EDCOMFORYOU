@@ -95,7 +95,7 @@ function modelPhoto(phone: Phone) {
   return (
     modelPhotoLookup[cleanModelName(phone.model)] ??
     phone.colors[0]?.image ??
-    "/assets/apple-iphone-lineup-ai.png"
+    "/assets/phones/official-polished/iphone-17-pro-max.png"
   );
 }
 
@@ -106,7 +106,7 @@ function primaryPhoto(phone: Phone, color?: PhoneColor) {
 function handleImageError(event: SyntheticEvent<HTMLImageElement>) {
   const image = event.currentTarget;
   image.onerror = null;
-  image.src = "/assets/apple-iphone-lineup-ai.png";
+  image.src = "/assets/phones/official-polished/iphone-17-pro-max.png";
 }
 
 function colorName(color: PhoneColor, lang: LanguageCode) {
@@ -392,7 +392,9 @@ export default function InstallmentApp() {
             src="/assets/edcom-logo-optimized.png"
             alt="EDCOM TELESHOP logo"
           />
-          <h1>{strings.brandTitle}</h1>
+          <div className="brand-copy">
+            <h1>{strings.brandTitle}</h1>
+          </div>
         </div>
         <div className="market-note">
           <span className="pill">{strings.priceUpdated}</span>
@@ -413,8 +415,27 @@ export default function InstallmentApp() {
         <section className="left">
           <section className="hero" aria-label={strings.heroAria}>
             <div className="hero-content">
-              <h2>{strings.heroTitle}</h2>
               <p>{strings.heroCopy}</p>
+            </div>
+            <div className="hero-phone-stack" aria-label="iPhone 17 Pro Max colors">
+              <img
+                className="hero-phone hero-phone-blue"
+                src="https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_blue__li170wg4gkae_large.jpg"
+                alt="iPhone 17 Pro Max deep blue"
+                onError={handleImageError}
+              />
+              <img
+                className="hero-phone hero-phone-silver"
+                src="/assets/phones/official-polished/iphone-17-pro-max.png"
+                alt="iPhone 17 Pro Max silver"
+                onError={handleImageError}
+              />
+              <img
+                className="hero-phone hero-phone-orange"
+                src="https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_orange__cr2oq3n1dwk2_large.jpg"
+                alt="iPhone 17 Pro Max cosmic orange"
+                onError={handleImageError}
+              />
             </div>
           </section>
 
@@ -751,12 +772,6 @@ export default function InstallmentApp() {
 }
 
 function PromoVideoPanel() {
-  const facebookVideoUrl =
-    "https://www.facebook.com/100007998093450/videos/pcb.4563034177306474/953551917597455";
-  const facebookEmbedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(
-    facebookVideoUrl
-  )}&show_text=false&width=1280`;
-
   return (
     <section className="promo-video-panel" aria-label="宣传视频">
       <div className="promo-video-copy">
@@ -768,13 +783,14 @@ function PromoVideoPanel() {
         </a>
       </div>
       <div className="promo-video-frame">
-        <iframe
-          src={facebookEmbedUrl}
-          title="EDCOM TELESHOP Facebook 宣传视频"
-          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-          allowFullScreen
-          loading="lazy"
-        />
+        <video
+          controls
+          playsInline
+          preload="metadata"
+          poster="/assets/phones/official-polished/iphone-17-pro-max.png"
+        >
+          <source src="/assets/promo/edcom-promo.mp4" type="video/mp4" />
+        </video>
       </div>
     </section>
   );
