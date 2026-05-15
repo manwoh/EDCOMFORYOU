@@ -50,10 +50,20 @@ const currency = new Intl.NumberFormat("en-MY", {
   currency: "MYR",
   maximumFractionDigits: 0
 });
+const installmentCurrency = new Intl.NumberFormat("en-MY", {
+  style: "currency",
+  currency: "MYR",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
 const modelPhotoLookup: Record<string, string> = modelPhotos;
 
 function formatCurrency(value: number) {
   return currency.format(value);
+}
+
+function formatInstallmentCurrency(value: number) {
+  return installmentCurrency.format(value);
 }
 
 function getBasePrice(phone: Phone) {
@@ -119,9 +129,10 @@ function calculateInstallment(
   const price = capacity.price;
   const downPayment = Math.round((price * downPercent) / 100);
   const principal = price - downPayment;
-  const total = Math.round(principal * ((100 - downPercent) / 100));
-  const monthly = Math.ceil(total / term.months);
-  const fee = total - principal;
+  const paymentCount = Math.max(term.months - 1, 1);
+  const total = Math.round(principal * term.rentMultiplier * 100) / 100;
+  const monthly = Math.round((total / paymentCount) * 100) / 100;
+  const fee = Math.round((total - principal) * 100) / 100;
 
   return { phone, color, capacity, term, price, downPayment, principal, fee, total, monthly };
 }
@@ -193,7 +204,7 @@ export default function InstallmentApp() {
     phones[0].capacities[0]?.label ?? ""
   );
   const [downPercent, setDownPercent] = useState(40);
-  const [termIndex, setTermIndex] = useState(2);
+  const [termIndex, setTermIndex] = useState(0);
   const [toast, setToast] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<Record<UploadKey, string>>({
@@ -348,7 +359,7 @@ export default function InstallmentApp() {
       `手机售价: ${formatCurrency(result.price)}`,
       `首付: ${formatCurrency(result.downPayment)} (${downPercent}%)`,
       `分期期数: ${result.term.months} 个月`,
-      `每期还款: ${formatCurrency(result.monthly)}`,
+      `每期还款: ${formatInstallmentCurrency(result.monthly)}`,
       "",
       "顾客上传文件:",
       `身份证 IC: ${uploadLinks.identity_card_url || "未上传"}`,
@@ -359,7 +370,7 @@ export default function InstallmentApp() {
     ].filter(Boolean).join("\n");
     const whatsappUrl = `https://wa.me/60127080588?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-    showToast(getToastMessage(lang, name, result.phone.model, result.term.months, formatCurrency(result.monthly)));
+    showToast(getToastMessage(lang, name, result.phone.model, result.term.months, formatInstallmentCurrency(result.monthly)));
     setIsSubmitting(false);
   }
 
@@ -497,6 +508,8 @@ export default function InstallmentApp() {
                     type="Official"
                     items={officialPhones}
                     strings={strings}
+                    term={selectedTerm}
+                    downPercent={downPercent}
                     selectedModel={selectedPhone.model}
                     latestModel={latestPhone.model}
                     onSelect={selectPhone}
@@ -505,6 +518,8 @@ export default function InstallmentApp() {
                     type="Used"
                     items={usedPhones}
                     strings={strings}
+                    term={selectedTerm}
+                    downPercent={downPercent}
                     selectedModel={selectedPhone.model}
                     latestModel={latestPhone.model}
                     onSelect={selectPhone}
@@ -535,7 +550,7 @@ export default function InstallmentApp() {
               <h2>{strings.summaryTitle}</h2>
               <p>{strings.summaryCopy}</p>
               <div className="monthly">
-                <strong>{formatCurrency(result.monthly)}</strong>
+                <strong>{formatInstallmentCurrency(result.monthly)}</strong>
                 <span>{strings.monthlyUnit}</span>
               </div>
             </div>
@@ -661,7 +676,7 @@ export default function InstallmentApp() {
                 <SummaryRow label={strings.downRowLabel} value={formatCurrency(result.downPayment)} />
                 <SummaryRow
                   label={strings.monthlyRowLabel}
-                  value={formatCurrency(result.monthly)}
+                  value={formatInstallmentCurrency(result.monthly)}
                 />
               </div>
 
@@ -779,7 +794,10 @@ function PromoVideoPanel() {
       </div>
       <div className="promo-video-frame">
         <video
+          autoPlay
           controls
+          loop
+          muted
           playsInline
           preload="metadata"
           poster="/assets/phones/official-polished/iphone-17-pro-max.png"
@@ -826,7 +844,7 @@ function LatestProductPanel({
           </div>
           <div>
             <span>{strings.latestMonthly}</span>
-            <strong>{formatCurrency(result.monthly)}</strong>
+            <strong>{formatInstallmentCurrency(result.monthly)}</strong>
           </div>
           <div>
             <span>{strings.latestStorage}</span>
@@ -851,6 +869,8 @@ function ProductSection({
   type,
   items,
   strings,
+  term,
+  downPercent,
   selectedModel,
   latestModel,
   onSelect
@@ -858,6 +878,8 @@ function ProductSection({
   type: PhoneType;
   items: Phone[];
   strings: Strings;
+  term: InstallmentTerm;
+  downPercent: number;
   selectedModel: string;
   latestModel: string;
   onSelect: (phone: Phone) => void;
@@ -880,6 +902,8 @@ function ProductSection({
             key={phone.model}
             phone={phone}
             strings={strings}
+            term={term}
+            downPercent={downPercent}
             isSelected={phone.model === selectedModel}
             isLatest={phone.model === latestModel}
             onSelect={onSelect}
@@ -893,16 +917,29 @@ function ProductSection({
 function ProductCard({
   phone,
   strings,
+  term,
+  downPercent,
   isSelected,
   isLatest,
   onSelect
 }: {
   phone: Phone;
   strings: Strings;
+  term: InstallmentTerm;
+  downPercent: number;
   isSelected: boolean;
   isLatest: boolean;
   onSelect: (phone: Phone) => void;
 }) {
+  const preview = calculateInstallment(
+    phone,
+    phone.colors[0],
+    phone.capacities[0],
+    term,
+    downPercent
+  );
+  const dailyFrom = preview.monthly / 30;
+
   return (
     <button
       className={`phone-card ${isSelected ? "is-active" : ""}`}
@@ -939,6 +976,10 @@ function ProductCard({
           <br />
           {strings[phone.noteKey]}
         </span>
+      </div>
+      <div className="installment-preview">
+        <span>最低一天</span>
+        <strong>{formatInstallmentCurrency(dailyFrom)}</strong>
       </div>
     </button>
   );

@@ -34,6 +34,7 @@ export type Phone = {
 export type InstallmentTerm = {
   months: number;
   rate: number;
+  rentMultiplier: number;
 };
 
 export const translations = {
@@ -1208,16 +1209,34 @@ export const modelPhotos = {
 
 export const terms = [
   {
-    "months": 3,
-    "rate": 0.15
+    "months": 4,
+    "rate": 0.15,
+    "rentMultiplier": 1.42
+  },
+  {
+    "months": 5,
+    "rate": 0.15,
+    "rentMultiplier": 1.4599972215
   },
   {
     "months": 6,
-    "rate": 0.15
+    "rate": 0.15,
+    "rentMultiplier": 1.4999972215
+  },
+  {
+    "months": 7,
+    "rate": 0.15,
+    "rentMultiplier": 1.5999944429
   },
   {
     "months": 8,
-    "rate": 0.15
+    "rate": 0.15,
+    "rentMultiplier": 1.6499888858
+  },
+  {
+    "months": 9,
+    "rate": 0.15,
+    "rentMultiplier": 2.1333259239
   }
 ] satisfies InstallmentTerm[];
 
