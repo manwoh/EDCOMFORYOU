@@ -2,7 +2,6 @@
 
 import type { CSSProperties, FormEvent, SyntheticEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createRoot, type Root } from "react-dom/client";
 import {
   brands,
   deliveryStates,
@@ -27,6 +26,11 @@ type ColorStyle = CSSProperties & {
   "--color-soft": string;
 };
 type UploadKey = "ic" | "salary" | "bank";
+type OrderUploadLinks = {
+  identity_card_url?: string | null;
+  salary_slip_url?: string | null;
+  bank_statement_url?: string | null;
+};
 
 type InstallmentResult = {
   phone: Phone;
@@ -41,37 +45,12 @@ type InstallmentResult = {
   monthly: number;
 };
 
-declare global {
-  interface Window {
-    __installmentReactRoot?: Root;
-  }
-}
-
 const currency = new Intl.NumberFormat("en-MY", {
   style: "currency",
   currency: "MYR",
   maximumFractionDigits: 0
 });
 const modelPhotoLookup: Record<string, string> = modelPhotos;
-
-function mountStandaloneApp() {
-  if (typeof window === "undefined") return;
-
-  const mount = () => {
-    const rootElement = document.getElementById("installment-root");
-    if (!rootElement || rootElement.dataset.reactMounted === "true") return;
-
-    rootElement.dataset.reactMounted = "true";
-    window.__installmentReactRoot = createRoot(rootElement);
-    window.__installmentReactRoot.render(<InstallmentApp />);
-  };
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mount, { once: true });
-  } else {
-    window.setTimeout(mount, 0);
-  }
-}
 
 function formatCurrency(value: number) {
   return currency.format(value);
@@ -100,7 +79,7 @@ function modelPhoto(phone: Phone) {
 }
 
 function primaryPhoto(phone: Phone, color?: PhoneColor) {
-  return modelPhoto(phone) ?? color?.image ?? phone.colors[0]?.image;
+  return color?.image ?? modelPhoto(phone) ?? phone.colors[0]?.image;
 }
 
 function handleImageError(event: SyntheticEvent<HTMLImageElement>) {
@@ -140,9 +119,9 @@ function calculateInstallment(
   const price = capacity.price;
   const downPayment = Math.round((price * downPercent) / 100);
   const principal = price - downPayment;
-  const fee = Math.round(principal * term.rate * term.months);
-  const total = principal + fee;
+  const total = Math.round(principal * ((100 - downPercent) / 100));
   const monthly = Math.ceil(total / term.months);
+  const fee = total - principal;
 
   return { phone, color, capacity, term, price, downPayment, principal, fee, total, monthly };
 }
@@ -329,19 +308,26 @@ export default function InstallmentApp() {
     formData.append("monthlyPayment", String(result.monthly));
 
     let orderId = "";
+    let uploadLinks: OrderUploadLinks = {};
 
     try {
       const response = await fetch("/api/orders", {
         method: "POST",
         body: formData
       });
-      const payload = (await response.json()) as { ok?: boolean; id?: string | number; message?: string };
+      const payload = (await response.json()) as {
+        ok?: boolean;
+        id?: string | number;
+        message?: string;
+        order?: OrderUploadLinks;
+      };
 
       if (!response.ok || !payload.ok) {
         throw new Error(payload.message || "订单上传失败");
       }
 
       orderId = payload.id ? String(payload.id) : "";
+      uploadLinks = payload.order ?? {};
     } catch (error) {
       showToast(error instanceof Error ? error.message : "订单上传失败，请稍后再试。");
       setIsSubmitting(false);
@@ -364,9 +350,10 @@ export default function InstallmentApp() {
       `分期期数: ${result.term.months} 个月`,
       `每期还款: ${formatCurrency(result.monthly)}`,
       "",
-      `身份证 IC: ${uploadedFiles.ic ? "已上传" : "未上传"}`,
-      `薪水单: ${uploadedFiles.salary ? "已上传" : "未上传"}`,
-      `银行账单: ${uploadedFiles.bank ? "已上传" : "未上传"}`,
+      "顾客上传文件:",
+      `身份证 IC: ${uploadLinks.identity_card_url || "未上传"}`,
+      `薪水单: ${uploadLinks.salary_slip_url || "未上传"}`,
+      `银行账单: ${uploadLinks.bank_statement_url || "未上传"}`,
       "",
       "我想申请这个分期方案。"
     ].filter(Boolean).join("\n");
@@ -414,29 +401,11 @@ export default function InstallmentApp() {
       <main className="page">
         <section className="left">
           <section className="hero" aria-label={strings.heroAria}>
-            <div className="hero-content">
-              <p>{strings.heroCopy}</p>
-            </div>
-            <div className="hero-phone-stack" aria-label="iPhone 17 Pro Max colors">
-              <img
-                className="hero-phone hero-phone-blue"
-                src="https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_blue__li170wg4gkae_large.jpg"
-                alt="iPhone 17 Pro Max deep blue"
-                onError={handleImageError}
-              />
-              <img
-                className="hero-phone hero-phone-silver"
-                src="/assets/phones/official-polished/iphone-17-pro-max.png"
-                alt="iPhone 17 Pro Max silver"
-                onError={handleImageError}
-              />
-              <img
-                className="hero-phone hero-phone-orange"
-                src="https://www.apple.com/v/iphone-17-pro/e/images/overview/product-viewer/colors_orange__cr2oq3n1dwk2_large.jpg"
-                alt="iPhone 17 Pro Max cosmic orange"
-                onError={handleImageError}
-              />
-            </div>
+            <img
+              className="hero-ad-image"
+              src="/assets/iphone-17-pro-color-lineup-apple.jpg"
+              alt="iPhone 17 Pro color lineup"
+            />
           </section>
 
           <PromoVideoPanel />
@@ -588,7 +557,9 @@ export default function InstallmentApp() {
                       style={colorCardStyle(item)}
                       onClick={() => setSelectedColorName(item.en)}
                     >
-                      <span className="color-dot" />
+                      <span className="color-phone-frame">
+                        <img src={item.image} alt={`${result.phone.model} ${colorName(item, lang)}`} />
+                      </span>
                       <span className="color-name">{colorName(item, lang)}</span>
                     </button>
                   ))}
@@ -776,8 +747,8 @@ function PromoVideoPanel() {
     <section className="promo-video-panel" aria-label="宣传视频">
       <div className="promo-video-copy">
         <span>宣传视频</span>
-        <h2>EDCOM TELESHOP iPhone 分期</h2>
-        <p>这里可以放门店宣传短片、热门 iPhone 展示、顾客分期流程和活动优惠，让客户进入页面后更快了解你的服务。</p>
+        <h2>欢迎光临，让我们为你服务</h2>
+        <p>更多疑问可以 WhatsApp 咨询</p>
         <a href="https://wa.me/60127080588" target="_blank" rel="noopener noreferrer">
           WhatsApp 咨询
         </a>
@@ -989,5 +960,3 @@ function DocumentUploadButton({
     </label>
   );
 }
-
-mountStandaloneApp();
