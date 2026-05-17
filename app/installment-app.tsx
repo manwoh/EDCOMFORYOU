@@ -32,6 +32,19 @@ type OrderUploadLinks = {
   bank_statement_url?: string | null;
 };
 
+const walkInLocations = [
+  {
+    name: "EDCOM TELESHOP Giant Tampoi",
+    address: "Lot A04, Giant Tampoi 81300 Johor",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Lot%20A04%2C%20Giant%20Tampoi%2081300%20Johor"
+  },
+  {
+    name: "EDCOM TELESHOP Bestari Bestmart",
+    address: "S88 Bestari Bestmart 81300 Johor",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=S88%20Bestari%20Bestmart%2081300%20Johor"
+  }
+] as const;
+
 type InstallmentResult = {
   phone: Phone;
   color: PhoneColor;
@@ -765,6 +778,8 @@ export default function InstallmentApp() {
                 </button>
               </form>
 
+              <WalkInPanel strings={strings} />
+
               <p className="fineprint">{strings.fineprint}</p>
             </div>
           </section>
@@ -775,6 +790,30 @@ export default function InstallmentApp() {
         {toast}
       </div>
     </>
+  );
+}
+
+function WalkInPanel({ strings }: { strings: Strings }) {
+  return (
+    <section className="walkin-panel" aria-label={strings.walkInTitle}>
+      <div className="walkin-heading">
+        <span>{strings.walkInTitle}</span>
+        <p>{strings.walkInCopy}</p>
+      </div>
+      <div className="walkin-list">
+        {walkInLocations.map((location) => (
+          <article className="walkin-card" key={location.address}>
+            <div>
+              <h3>{location.name}</h3>
+              <p>{location.address}</p>
+            </div>
+            <a href={location.mapUrl} target="_blank" rel="noopener noreferrer">
+              {strings.mapButton}
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
 
