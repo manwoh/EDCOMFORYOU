@@ -26,3 +26,7 @@ on public.installment_orders
 for all
 using (auth.role() = 'service_role')
 with check (auth.role() = 'service_role');
+
+insert into storage.buckets (id, name, public)
+values ('installment-documents', 'installment-documents', false)
+on conflict (id) do nothing;

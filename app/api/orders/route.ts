@@ -1,14 +1,13 @@
-import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
 type UploadedAsset = {
   url: string;
-  secure_url?: string;
-  public_id?: string;
-  resource_type?: string;
-  original_filename?: string;
+  path: string;
+  bucket: string;
+  original_filename: string;
+  content_type: string;
 };
 
 function requiredEnv(name: string) {
@@ -19,55 +18,86 @@ function requiredEnv(name: string) {
   return value;
 }
 
-function cloudinarySignature(params: Record<string, string>, secret: string) {
-  const payload = Object.entries(params)
-    .filter(([, value]) => value !== "")
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, value]) => `${key}=${value}`)
-    .join("&");
-
-  return createHash("sha1").update(`${payload}${secret}`).digest("hex");
+function safeFileName(name: string) {
+  return name
+    .replace(/[^\w.\-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 120) || "document";
 }
 
-async function uploadToCloudinary(file: File | null, label: string) {
-  if (!file || file.size === 0) return null;
+function fullSignedUrl(supabaseUrl: string, signedPath: string) {
+  if (signedPath.startsWith("http")) return signedPath;
+  if (signedPath.startsWith("/")) return `${supabaseUrl}/storage/v1${signedPath}`;
+  return `${supabaseUrl}/storage/v1/${signedPath}`;
+}
 
-  const cloudName = requiredEnv("CLOUDINARY_CLOUD_NAME");
-  const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET;
-  const folder = process.env.CLOUDINARY_FOLDER || "edcom-installments";
-  const formData = new FormData();
-
-  formData.append("file", file);
-  formData.append("folder", folder);
-  formData.append("tags", `edcom,installment,${label}`);
-
-  if (uploadPreset) {
-    formData.append("upload_preset", uploadPreset);
-  } else {
-    const apiKey = requiredEnv("CLOUDINARY_API_KEY");
-    const apiSecret = requiredEnv("CLOUDINARY_API_SECRET");
-    const timestamp = Math.floor(Date.now() / 1000).toString();
-    const signatureParams = { folder, tags: `edcom,installment,${label}`, timestamp };
-
-    formData.append("api_key", apiKey);
-    formData.append("timestamp", timestamp);
-    formData.append("signature", cloudinarySignature(signatureParams, apiSecret));
-  }
-
+async function createSignedStorageUrl(supabaseUrl: string, serviceRoleKey: string, bucket: string, path: string) {
   const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
+    `${supabaseUrl}/storage/v1/object/sign/${bucket}/${encodeURI(path)}`,
     {
       method: "POST",
-      body: formData
+      headers: {
+        apikey: serviceRoleKey,
+        Authorization: `Bearer ${serviceRoleKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ expiresIn: 60 * 60 * 24 * 30 })
     }
   );
 
   if (!response.ok) {
     const message = await response.text();
-    throw new Error(`Cloudinary upload failed for ${label}: ${message}`);
+    throw new Error(`Supabase signed URL failed for ${path}: ${message}`);
   }
 
-  return (await response.json()) as UploadedAsset;
+  const payload = (await response.json()) as { signedURL?: string; signedUrl?: string };
+  const signedPath = payload.signedURL || payload.signedUrl;
+
+  if (!signedPath) {
+    throw new Error(`Supabase signed URL missing for ${path}`);
+  }
+
+  return fullSignedUrl(supabaseUrl, signedPath);
+}
+
+async function uploadToSupabaseStorage(file: File | null, label: string, orderRef: string) {
+  if (!file || file.size === 0) return null;
+
+  const supabaseUrl = requiredEnv("SUPABASE_URL").replace(/\/$/, "");
+  const serviceRoleKey = requiredEnv("SUPABASE_SERVICE_ROLE_KEY");
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET || "installment-documents";
+  const originalName = file.name || `${label}.pdf`;
+  const path = `${orderRef}/${label}-${Date.now()}-${safeFileName(originalName)}`;
+
+  const response = await fetch(
+    `${supabaseUrl}/storage/v1/object/${bucket}/${encodeURI(path)}`,
+    {
+      method: "POST",
+      headers: {
+        apikey: serviceRoleKey,
+        Authorization: `Bearer ${serviceRoleKey}`,
+        "Content-Type": file.type || "application/octet-stream",
+        "x-upsert": "false"
+      },
+      body: Buffer.from(await file.arrayBuffer())
+    }
+  );
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(`Supabase Storage upload failed for ${label}: ${message}`);
+  }
+
+  const url = await createSignedStorageUrl(supabaseUrl, serviceRoleKey, bucket, path);
+
+  return {
+    url,
+    path,
+    bucket,
+    original_filename: originalName,
+    content_type: file.type || "application/octet-stream"
+  } satisfies UploadedAsset;
 }
 
 async function insertSupabaseOrder(order: Record<string, unknown>) {
@@ -107,10 +137,11 @@ function readFile(formData: FormData, key: string) {
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
+    const orderRef = `order-${Date.now()}`;
     const [identityCard, salarySlip, bankStatement] = await Promise.all([
-      uploadToCloudinary(readFile(formData, "identityCard"), "identity-card"),
-      uploadToCloudinary(readFile(formData, "salarySlip"), "salary-slip"),
-      uploadToCloudinary(readFile(formData, "bankStatement"), "bank-statement")
+      uploadToSupabaseStorage(readFile(formData, "identityCard"), "identity-card", orderRef),
+      uploadToSupabaseStorage(readFile(formData, "salarySlip"), "salary-slip", orderRef),
+      uploadToSupabaseStorage(readFile(formData, "bankStatement"), "bank-statement", orderRef)
     ]);
 
     const order = {
@@ -125,9 +156,9 @@ export async function POST(request: Request) {
       down_payment_amount: Number(readText(formData, "downPaymentAmount") || 0),
       term_months: Number(readText(formData, "termMonths") || 0),
       monthly_payment: Number(readText(formData, "monthlyPayment") || 0),
-      identity_card_url: identityCard?.secure_url || identityCard?.url || null,
-      salary_slip_url: salarySlip?.secure_url || salarySlip?.url || null,
-      bank_statement_url: bankStatement?.secure_url || bankStatement?.url || null,
+      identity_card_url: identityCard?.url || null,
+      salary_slip_url: salarySlip?.url || null,
+      bank_statement_url: bankStatement?.url || null,
       cloudinary_assets: {
         identityCard,
         salarySlip,
