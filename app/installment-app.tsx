@@ -779,6 +779,7 @@ export default function InstallmentApp() {
               </form>
 
               <WalkInPanel strings={strings} />
+              <DeliveryPanel strings={strings} />
 
               <p className="fineprint">{strings.fineprint}</p>
             </div>
@@ -813,6 +814,22 @@ function WalkInPanel({ strings }: { strings: Strings }) {
           </article>
         ))}
       </div>
+    </section>
+  );
+}
+
+function DeliveryPanel({ strings }: { strings: Strings }) {
+  return (
+    <section className="delivery-panel" aria-label={strings.deliveryTitle}>
+      <div className="delivery-copy">
+        <span>{strings.deliveryTitle}</span>
+        <p>{strings.deliveryCopy}</p>
+      </div>
+      <img
+        src="/assets/promo/malaysia-delivery.png"
+        alt={strings.deliveryTitle}
+        loading="lazy"
+      />
     </section>
   );
 }
