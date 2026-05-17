@@ -141,6 +141,10 @@ function calculateInstallment(
   return { phone, color, capacity, term, price, downPayment, principal, fee, total, monthly };
 }
 
+function displayTermMonths(term: InstallmentTerm) {
+  return Math.max(term.months - 1, 1);
+}
+
 function getToastMessage(
   lang: LanguageCode,
   name: string,
@@ -363,7 +367,7 @@ export default function InstallmentApp() {
       `颜色: ${colorName(result.color, lang)}`,
       `手机售价: ${formatCurrency(result.price)}`,
       `首付: ${formatCurrency(result.downPayment)} (${downPercent}%)`,
-      `分期期数: ${result.term.months} 个月`,
+      `分期期数: ${displayTermMonths(result.term)} 个月`,
       `一天还款: ${formatInstallmentCurrency(resultDaily)}`,
       "",
       "顾客上传文件:",
@@ -375,7 +379,7 @@ export default function InstallmentApp() {
     ].filter(Boolean).join("\n");
     const whatsappUrl = `https://wa.me/60127080588?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-    showToast(getToastMessage(lang, name, result.phone.model, result.term.months, formatInstallmentCurrency(resultDaily)));
+    showToast(getToastMessage(lang, name, result.phone.model, displayTermMonths(result.term), formatInstallmentCurrency(resultDaily)));
     setIsSubmitting(false);
   }
 
@@ -655,7 +659,7 @@ export default function InstallmentApp() {
                       aria-pressed={index === termIndex}
                       onClick={() => setTermIndex(index)}
                     >
-                      {term.months} {strings.termSuffix}
+                      {displayTermMonths(term)} {strings.termSuffix}
                     </button>
                   ))}
                 </div>
