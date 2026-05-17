@@ -1268,11 +1268,6 @@ export const terms = [
     "months": 8,
     "rate": 0.15,
     "rentMultiplier": 1.6499888858
-  },
-  {
-    "months": 9,
-    "rate": 0.15,
-    "rentMultiplier": 2.1333259239
   }
 ] satisfies InstallmentTerm[];
 
