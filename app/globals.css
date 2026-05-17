@@ -672,6 +672,13 @@
       gap: 8px;
     }
 
+    .term-note {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
     .color-buttons {
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 12px;

@@ -69,6 +69,7 @@ export const translations = {
     "capacityRowLabel": "所选容量",
     "downPaymentLabel": "顾客身份",
     "termLabel": "分期期数",
+    "termNote": "第一次交 Deposit 算第一期；例如选择 9 期，接下来只需要再还 8 期。",
     "priceRowLabel": "手机售价",
     "downRowLabel": "首付金额",
     "principalRowLabel": "融资本金",
@@ -161,6 +162,7 @@ export const translations = {
     "capacityRowLabel": "Selected storage",
     "downPaymentLabel": "Customer status",
     "termLabel": "Installment term",
+    "termNote": "The first deposit counts as the first term; for example, selecting 9 terms means only 8 remaining payments.",
     "priceRowLabel": "Phone price",
     "downRowLabel": "Down payment",
     "monthlyRowLabel": "Daily payment",
@@ -253,6 +255,7 @@ export const translations = {
     "capacityRowLabel": "Storan dipilih",
     "downPaymentLabel": "Status pelanggan",
     "termLabel": "Tempoh ansuran",
+    "termNote": "Deposit pertama dikira sebagai tempoh pertama; contohnya pilih 9 bulan, baki bayaran hanya 8 kali.",
     "priceRowLabel": "Harga telefon",
     "downRowLabel": "Jumlah pendahuluan",
     "monthlyRowLabel": "Bayaran sehari",
@@ -1268,6 +1271,11 @@ export const terms = [
     "months": 8,
     "rate": 0.15,
     "rentMultiplier": 1.6499888858
+  },
+  {
+    "months": 9,
+    "rate": 0.15,
+    "rentMultiplier": 2.1333259239
   }
 ] satisfies InstallmentTerm[];
 

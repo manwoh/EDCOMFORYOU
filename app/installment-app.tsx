@@ -659,6 +659,7 @@ export default function InstallmentApp() {
                     </button>
                   ))}
                 </div>
+                <p className="term-note">{strings.termNote}</p>
               </div>
 
               <div className="rows summary-breakdown">
