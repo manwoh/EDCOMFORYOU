@@ -197,7 +197,7 @@ function InfoIcon() {
 }
 
 export default function InstallmentApp() {
-  const [lang, setLang] = useState<LanguageCode>("zh");
+  const [lang, setLang] = useState<LanguageCode>("ms");
   const [brand, setBrand] = useState<string>(brands[0]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("featured");
@@ -407,8 +407,8 @@ export default function InstallmentApp() {
             value={lang}
             onChange={(event) => setLang(event.target.value as LanguageCode)}
           >
-            <option value="zh">中文</option>
             <option value="ms">Melayu</option>
+            <option value="zh">中文</option>
             <option value="en">English</option>
           </select>
         </div>

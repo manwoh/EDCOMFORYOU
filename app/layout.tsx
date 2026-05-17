@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "EDCOM TELESHOP Apple iPhone 分期",
-  description: "EDCOM TELESHOP Apple iPhone installment page"
+  title: "EDCOM TELESHOP Pakej Sewa iPhone",
+  description: "Pakej sewa iPhone EDCOM TELESHOP"
 };
 
 export default function RootLayout({
@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
+    <html lang="ms">
       <body>{children}</body>
     </html>
   );
